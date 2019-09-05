@@ -1,0 +1,3 @@
+﻿-- Script Date: 02/03/2019 03:22  - ErikEJ.SqlCeScripting version 3.5.2.80
+ALTER TABLE [Orders] ADD [PrintRun] nvarchar(250) NULL;
+GO

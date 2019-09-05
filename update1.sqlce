@@ -1,0 +1,6 @@
+﻿-- Script Date: 3/30/2018 11:01 PM  - ErikEJ.SqlCeScripting version 3.5.2.75
+-- Adding as column with NOT NULL is not allowed, set a default value or allow NULL
+ALTER TABLE [Orders] ADD [Resend] bit NULL ;
+GO
+ALTER TABLE [Orders] ADD [ShortTitle] nvarchar(400);
+GO

@@ -1,0 +1,3 @@
+﻿-- Script Date: 02/03/2019 23:07  - ErikEJ.SqlCeScripting version 3.5.2.80
+ALTER TABLE [PrintProfiles] ADD [PrintRun] nvarchar(250) NULL;
+GO
