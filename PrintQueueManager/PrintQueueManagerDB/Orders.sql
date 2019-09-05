@@ -1,0 +1,27 @@
+﻿CREATE TABLE [dbo].[Orders]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY, 
+    [TimeOfOrder] DATETIME NULL, 
+    [Linked] BIT NOT NULL, 
+    [Quantity] INT NOT NULL, 
+    [OrderNotes] NVARCHAR(500) NULL, 
+    [OrderStatus] INT NOT NULL,
+    [CustomerName] NVARCHAR(150) NULL, 
+    [CustomerEmail] NVARCHAR(50) NULL, 
+    [Sku] NVARCHAR(50) NULL, 
+    [Paid] BIT NOT NULL, 
+    [ReceivedDate] DATETIME NOT NULL, 
+    [CreatedDate] DATETIME NOT NULL, 
+    [Status] INT NULL, 
+    [ImportedFilename] NVARCHAR(150) NULL, 
+    [DateTimeImported] DATETIME NULL, 
+    [LinkedFilename] NVARCHAR(150) NULL, 
+    [ManualLinked] BIT NOT NULL, 
+    [NoOfPages] INT NULL, 
+    [FileSize] INT NULL, 
+    [CompletedDateTime] DATETIME NULL, 
+    [Remark] NVARCHAR(50) NULL, 
+    [ReprintedQuantity] INT NULL, 
+    [OrderId] INT NULL, 
+    [ItemTitle] NVARCHAR(500) NULL
+)

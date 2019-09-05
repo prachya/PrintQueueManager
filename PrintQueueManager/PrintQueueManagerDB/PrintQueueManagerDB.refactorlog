@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="f596832e-8d66-42e2-b2a0-eb9a04df73f4" ChangeDateTime="02/12/2018 03:34:32">
+    <Property Name="ElementName" Value="[dbo].[Orders].[Notes]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Orders]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="OrderNotes" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="35bc3511-8866-4b06-bcb5-ea87f26acd74" ChangeDateTime="02/12/2018 03:36:25">
+    <Property Name="ElementName" Value="[dbo].[Orders].[Status]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Orders]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="OrderStatus" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="51191bb9-ccc2-4fce-bc61-ec72499cc5eb" ChangeDateTime="02/12/2018 13:09:45">
+    <Property Name="ElementName" Value="[dbo].[QueueProfiles].[CreateDate]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[QueueProfiles]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="CreatedDate" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="ddee6ef1-30f0-42b0-9aff-f06a568043a2" ChangeDateTime="02/12/2018 13:10:57">
+    <Property Name="ElementName" Value="[dbo].[QueueProfiles].[Ftp]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[QueueProfiles]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="FtpServer" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="5a5cd887-ce50-4fb5-95c5-5473cd00a2ec" ChangeDateTime="02/12/2018 13:45:22">
+    <Property Name="ElementName" Value="[dbo].[Orders].[OrderStatus]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Orders]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="PrintStatus" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="9ab36768-3d24-4d96-acd8-1509ce4cdd37" ChangeDateTime="02/12/2018 15:00:43">
+    <Property Name="ElementName" Value="[dbo].[ProfileOrders].[PrintOrder]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ProfileOrders]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="PrintingOrder" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="8f616fb0-231c-4df7-a9d0-2d2531124898" ChangeDateTime="02/12/2018 15:04:35">
+    <Property Name="ElementName" Value="[dbo].[ProfileOrders].[StartPrintingTime]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ProfileOrders]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="StaredPrintingTime" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="c3cb88c1-4bca-4fca-af17-a37224a0c128" ChangeDateTime="02/12/2018 15:05:00">
+    <Property Name="ElementName" Value="[dbo].[ProfileOrders].[StoppedPrintingTime]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ProfileOrders]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="CompletedPrintingTime" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="04cff965-96a6-4c0b-81d4-a08e8914d749" ChangeDateTime="02/12/2018 15:06:19">
+    <Property Name="ElementName" Value="[dbo].[Orders].[PrintStatus]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Orders]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="OrderStatus" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="3411888f-bf20-4d46-958c-5b8014b3c9fc" ChangeDateTime="02/12/2018 15:41:00">
+    <Property Name="ElementName" Value="[dbo].[PrintProfiles].[Pauses]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[PrintProfiles]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="TotaPauses" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="243a540f-b55c-44a3-8d9b-9ff78cd1f1d5" ChangeDateTime="02/12/2018 15:41:09">
+    <Property Name="ElementName" Value="[dbo].[PrintProfiles].[TotaPauses]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[PrintProfiles]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="TotalPauses" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="c39302fd-373b-448f-b6de-cad4cf03f29c" ChangeDateTime="02/12/2018 15:41:17">
+    <Property Name="ElementName" Value="[dbo].[PrintProfiles].[Pendings]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[PrintProfiles]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="TotalPendings" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="372912d3-e811-4b44-b752-eb2a35259d91" ChangeDateTime="02/12/2018 15:41:23">
+    <Property Name="ElementName" Value="[dbo].[PrintProfiles].[Completes]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[PrintProfiles]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="TotalCompletes" />
+  </Operation>
+</Operations>
