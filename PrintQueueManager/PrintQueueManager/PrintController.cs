@@ -9,7 +9,7 @@ using System.IO;
 using System.Printing;
 using System.Threading;
 using System.Diagnostics;
-using PdfSharp.Pdf.Printing;
+//using PdfSharp.Pdf.Printing;
 using System.Runtime.InteropServices;
 //using EvoPdf.PdfPrint;
 using TallComponents.PDF.Rasterizer;
