@@ -152,8 +152,9 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="TallComponents.PDF.Rasterizer">
-      <HintPath>..\..\..\..\Users\PM\Downloads\TallComponents_PDFRasterizer.NET_3.0.147.0_Downloadly.ir\TallComponents PDFRasterizer.NET 3.0.147.0\net40\TallComponents.PDF.Rasterizer.dll</HintPath>
+    <Reference Include="TallComponents.PDF.Rasterizer, Version=3.0.147.0, Culture=neutral, PublicKeyToken=76bf2dedaa68ccb5, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\TallComponents PDFRasterizer.NET 3.0.147.0\net40\TallComponents.PDF.Rasterizer.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
