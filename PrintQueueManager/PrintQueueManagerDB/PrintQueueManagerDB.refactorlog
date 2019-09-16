@@ -91,4 +91,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="TotalCompletes" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="01c76ba5-8c57-4571-bdcd-d5c7e050dc3b" ChangeDateTime="09/16/2019 04:12:55">
+    <Property Name="ElementName" Value="[dbo].[Filters].[StartWith]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Filters]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="StartsWith" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="55a276d8-5ea0-4352-9fad-ceda067ed375" ChangeDateTime="09/16/2019 04:12:59">
+    <Property Name="ElementName" Value="[dbo].[Filters].[EndWith]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Filters]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="EndsWith" />
+  </Operation>
 </Operations>

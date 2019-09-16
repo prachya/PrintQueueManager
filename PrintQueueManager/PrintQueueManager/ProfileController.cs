@@ -66,6 +66,13 @@ namespace PrintQueueManager
 
         public ProfileFrame frame { get; set; }
         private List<PrintItemDataRow> CurrentList;
+
+        public void DeleteFromDatabase()
+        {
+            db.PrintProfiles.Remove(profile);
+            db.SaveChanges();
+        }
+
         public void Show()
         {
             frame = new ProfileFrame();
@@ -153,7 +160,6 @@ namespace PrintQueueManager
             LoadProfileOrders();
 
         }
-
 
         private int GetNextLastPrintingOrder()
         {
@@ -350,6 +356,7 @@ namespace PrintQueueManager
         }
 
         public bool Stopping { get; set; }
+
         public async void Stop(bool kill = false)
         {
             if (Stopping || Status == ProfileStatus.Stopped)
@@ -383,9 +390,7 @@ namespace PrintQueueManager
                 //frame.lblStatus.ForeColor = System.Drawing.Color.Red;
             }
         }
-
-       
-
+      
         public void SetReprint(ProfileOrder profileOrder,int qty)
         {
             profileOrder.Order.ReprintedQuantity = qty; // Int32.Parse(reprint.txtQty.Text);
@@ -430,8 +435,7 @@ namespace PrintQueueManager
             db.SaveChanges();
             LoadProfileOrders();     
         }
-
-        
+      
         private async Task<bool> PrintNext()
         {
             //var printItem = CurrentList.Where(d => d.ProfileOrder.PrintingStatus == Data.PrintingStatus.Pending).LastOrDefault();

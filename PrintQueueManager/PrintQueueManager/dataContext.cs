@@ -11,7 +11,7 @@ namespace PrintQueueManager.Data
         public virtual DbSet<ProfileOrder> ProfileOrders { get; set; }
         public virtual DbSet<Preset> Presets { get; set; }
         public virtual DbSet<PresetPrinter> PresetPrinters { get; set; }
-
+        public virtual DbSet<Filter> Filters { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -76,7 +76,19 @@ namespace PrintQueueManager.Data
                     .WithMany(p => p.ProfileOrders)
                     .HasForeignKey(d => d.ProfileId)
                     .HasConstraintName("FK_ProfileOrders_ToTable");
+                
             });
+
+
+            modelBuilder.Entity<Filter>(entity =>
+            {
+                entity.HasOne(d => d.Profile)
+                    .WithMany(p => p.ProfileFilters)
+                    .HasForeignKey(d => d.ProfileId)
+                    .HasConstraintName("FK_Profile_ToTable");
+            });
+
+
         }
     }
 }

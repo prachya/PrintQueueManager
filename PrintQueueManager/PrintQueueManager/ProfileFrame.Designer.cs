@@ -73,11 +73,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.orderGridView = new System.Windows.Forms.DataGridView();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.startPrintTimer = new System.Windows.Forms.Timer(this.components);
-            this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.orderBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PrintingOrder = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Qty = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -95,6 +90,13 @@
             this.CustomerEmail = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ProfileOrder = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Remark = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.startPrintTimer = new System.Windows.Forms.Timer(this.components);
+            this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.orderBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.btnDeleteProfile = new System.Windows.Forms.Button();
+            this.label12 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel4.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -134,7 +136,7 @@
             // 
             this.cmbPrintRun.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbPrintRun.FormattingEnabled = true;
-            this.cmbPrintRun.Location = new System.Drawing.Point(474, 87);
+            this.cmbPrintRun.Location = new System.Drawing.Point(407, 86);
             this.cmbPrintRun.Name = "cmbPrintRun";
             this.cmbPrintRun.Size = new System.Drawing.Size(252, 21);
             this.cmbPrintRun.TabIndex = 19;
@@ -145,7 +147,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(417, 90);
+            this.label11.Location = new System.Drawing.Point(350, 89);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(58, 13);
             this.label11.TabIndex = 18;
@@ -175,7 +177,7 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(730, 52);
+            this.button5.Location = new System.Drawing.Point(663, 51);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(23, 23);
             this.button5.TabIndex = 15;
@@ -185,6 +187,8 @@
             // 
             // panel4
             // 
+            this.panel4.Controls.Add(this.label12);
+            this.panel4.Controls.Add(this.btnDeleteProfile);
             this.panel4.Controls.Add(this.btnKill);
             this.panel4.Controls.Add(this.checkBox1);
             this.panel4.Controls.Add(this.maskedTextBox2);
@@ -194,9 +198,9 @@
             this.panel4.Controls.Add(this.button3);
             this.panel4.Controls.Add(this.lblStatus);
             this.panel4.Controls.Add(this.button2);
-            this.panel4.Location = new System.Drawing.Point(756, 2);
+            this.panel4.Location = new System.Drawing.Point(706, 2);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(353, 111);
+            this.panel4.Size = new System.Drawing.Size(403, 111);
             this.panel4.TabIndex = 14;
             // 
             // btnKill
@@ -269,11 +273,12 @@
             // lblStatus
             // 
             this.lblStatus.AutoSize = true;
-            this.lblStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
+            this.lblStatus.BackColor = System.Drawing.Color.White;
+            this.lblStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
             this.lblStatus.ForeColor = System.Drawing.Color.Red;
-            this.lblStatus.Location = new System.Drawing.Point(282, 15);
+            this.lblStatus.Location = new System.Drawing.Point(198, 82);
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(54, 13);
+            this.lblStatus.Size = new System.Drawing.Size(60, 15);
             this.lblStatus.TabIndex = 5;
             this.lblStatus.Text = "Stopped";
             this.lblStatus.TextChanged += new System.EventHandler(this.lblStatus_TextChanged);
@@ -312,7 +317,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(362, 50);
+            this.button1.Location = new System.Drawing.Point(299, 50);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(41, 23);
             this.button1.TabIndex = 9;
@@ -324,7 +329,7 @@
             // 
             this.cmbPrinter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbPrinter.FormattingEnabled = true;
-            this.cmbPrinter.Location = new System.Drawing.Point(474, 53);
+            this.cmbPrinter.Location = new System.Drawing.Point(407, 52);
             this.cmbPrinter.Name = "cmbPrinter";
             this.cmbPrinter.Size = new System.Drawing.Size(252, 21);
             this.cmbPrinter.TabIndex = 8;
@@ -337,14 +342,14 @@
             this.cmbPresets.FormattingEnabled = true;
             this.cmbPresets.Location = new System.Drawing.Point(62, 51);
             this.cmbPresets.Name = "cmbPresets";
-            this.cmbPresets.Size = new System.Drawing.Size(295, 21);
+            this.cmbPresets.Size = new System.Drawing.Size(231, 21);
             this.cmbPresets.TabIndex = 7;
             this.cmbPresets.SelectionChangeCommitted += new System.EventHandler(this.cmbPresets_SelectionChangeCommitted);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(417, 55);
+            this.label3.Location = new System.Drawing.Point(350, 54);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(40, 13);
             this.label3.TabIndex = 6;
@@ -362,7 +367,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(417, 19);
+            this.label2.Location = new System.Drawing.Point(350, 18);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(55, 13);
             this.label2.TabIndex = 4;
@@ -381,7 +386,7 @@
             "Starts with C",
             "SKU contains A2",
             "SKU contains A1"});
-            this.cmbFilterTypes.Location = new System.Drawing.Point(474, 14);
+            this.cmbFilterTypes.Location = new System.Drawing.Point(407, 13);
             this.cmbFilterTypes.Name = "cmbFilterTypes";
             this.cmbFilterTypes.Size = new System.Drawing.Size(252, 21);
             this.cmbFilterTypes.TabIndex = 3;
@@ -392,7 +397,7 @@
             // 
             this.txtProfileName.Location = new System.Drawing.Point(62, 15);
             this.txtProfileName.Name = "txtProfileName";
-            this.txtProfileName.Size = new System.Drawing.Size(298, 20);
+            this.txtProfileName.Size = new System.Drawing.Size(234, 20);
             this.txtProfileName.TabIndex = 2;
             this.txtProfileName.TextChanged += new System.EventHandler(this.txtProfileName_TextChanged);
             this.txtProfileName.Leave += new System.EventHandler(this.txtProfileName_Leave);
@@ -585,25 +590,6 @@
             this.orderGridView.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.orderGridView_CellMouseEnter);
             this.orderGridView.CellMouseMove += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.orderGridView_CellMouseMove);
             // 
-            // openFileDialog1
-            // 
-            this.openFileDialog1.FileName = "openFileDialog1";
-            this.openFileDialog1.Filter = "PDF files|*.pdf";
-            // 
-            // startPrintTimer
-            // 
-            this.startPrintTimer.Interval = 60000;
-            this.startPrintTimer.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // timer2
-            // 
-            this.timer2.Interval = 60000;
-            this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
-            // 
-            // orderBindingSource
-            // 
-            this.orderBindingSource.DataSource = typeof(PrintQueueManager.Data.Order);
-            // 
             // Id
             // 
             this.Id.DataPropertyName = "Id";
@@ -776,6 +762,44 @@
             this.Remark.Name = "Remark";
             this.Remark.ReadOnly = true;
             // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            this.openFileDialog1.Filter = "PDF files|*.pdf";
+            // 
+            // startPrintTimer
+            // 
+            this.startPrintTimer.Interval = 60000;
+            this.startPrintTimer.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // timer2
+            // 
+            this.timer2.Interval = 60000;
+            this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
+            // 
+            // orderBindingSource
+            // 
+            this.orderBindingSource.DataSource = typeof(PrintQueueManager.Data.Order);
+            // 
+            // btnDeleteProfile
+            // 
+            this.btnDeleteProfile.Location = new System.Drawing.Point(281, 10);
+            this.btnDeleteProfile.Name = "btnDeleteProfile";
+            this.btnDeleteProfile.Size = new System.Drawing.Size(102, 23);
+            this.btnDeleteProfile.TabIndex = 22;
+            this.btnDeleteProfile.Text = "Delete Profile";
+            this.btnDeleteProfile.UseVisualStyleBackColor = true;
+            this.btnDeleteProfile.Click += new System.EventHandler(this.BtnDeleteProfile_Click);
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(146, 84);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(40, 13);
+            this.label12.TabIndex = 23;
+            this.label12.Text = "Status:";
+            // 
             // ProfileFrame
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -866,5 +890,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn CustomerEmail;
         private System.Windows.Forms.DataGridViewTextBoxColumn ProfileOrder;
         private System.Windows.Forms.DataGridViewTextBoxColumn Remark;
+        private System.Windows.Forms.Label label12;
+        public System.Windows.Forms.Button btnDeleteProfile;
     }
 }

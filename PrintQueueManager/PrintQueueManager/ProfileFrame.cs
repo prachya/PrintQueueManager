@@ -335,24 +335,28 @@ namespace PrintQueueManager
             }
         }
 
-        private string GetPrintRunCount(string printRun)
+        private int GetPrintRunCount(string printRun)
         {
-            return Controller.profile.ProfileOrders.Count(d =>  (d.Order.PrintRun == printRun) 
-                                                    && (d.Order.OrderStatus  == OrderStatus.Pending )
-                                                    ).ToString();
+            return Controller.profile.ProfileOrders.Count(d => (d.Order.PrintRun == printRun)
+                                                    && (d.Order.OrderStatus == OrderStatus.Pending)
+                                                    );
         }
 
         public void PopulatePrintRun()
         {
-            var lst = Controller.profile.ProfileOrders.Where(d => (d.Order.PrintRun != null) && (d.Order.PrintRun != "")).OrderBy(d=>d.Order.PrintRun)
-                                                      .Select(d => d.Order.PrintRun).Distinct();
+            var printRunlist = Controller.profile.ProfileOrders.Where(d => (d.Order.PrintRun != null) 
+                                                                            && (d.Order.PrintRun != "")).OrderBy(d => d.Order.PrintRun)
+                                                                                                        .Select(d => d.Order.PrintRun).Distinct();
             cmbPrintRun.DisplayMember = "Text";
             cmbPrintRun.ValueMember = "Value";
             cmbPrintRun.Items.Clear();
-            foreach(var item in lst)
+            foreach(var item in printRunlist)
             {
-                cmbPrintRun.Items.Add(new { Text = item + " (" + GetPrintRunCount(item) + ")", Value = item } );
+                var c = GetPrintRunCount(item);
+                if(c > 0)
+                    cmbPrintRun.Items.Add(new { Text = item + " (" + c.ToString() + ")", Value = item } );
             }
+
             cmbPrintRun.Items.Insert(0,new { Text = "<Run All>", Value = "Run All" });
             if (Controller.profile.PrintRun != "")
             {
@@ -1210,6 +1214,11 @@ namespace PrintQueueManager
         private void cmbPrintRun_SelectedValueChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void BtnDeleteProfile_Click(object sender, EventArgs e)
+        {
+            Program.mainForm.DeleteProfile(txtProfileName.Text);
         }
     }
 

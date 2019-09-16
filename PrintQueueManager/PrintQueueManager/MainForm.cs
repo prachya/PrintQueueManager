@@ -105,6 +105,25 @@ namespace PrintQueueManager
             }
         }
 
+        public void DeleteProfile(string ProfileName)
+        {
+            if (MessageBox.Show("Please confirm deleting profile " + ProfileName, "Delete Profile", MessageBoxButtons.OKCancel) == DialogResult.OK)
+            {
+                foreach (var tab in tabControl1.TabPages.OfType<TabPage>())
+                {
+                    if((tab.Controls[0] as ProfileFrame).Name == ProfileName)
+                    {
+                        var controller = (tab.Controls[0] as ProfileFrame).Controller;
+                        tabControl1.TabPages.Remove(tab);
+                        this.ProfileControllers.Remove(controller);
+                        break;
+                    }
+                }
+                
+            }
+        }
+
+
         private void LoadConfigData()
         {
             if (!File.Exists("config.json"))
