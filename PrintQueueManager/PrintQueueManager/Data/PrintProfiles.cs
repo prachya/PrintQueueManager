@@ -5,7 +5,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PrintQueueManager.Data
 {
-    public enum FilterType { ContainsA3=0,ContainsA5=1,ContainsA4=2,StartsD=3, StartsNH=4,StartsC=5, ContainsA2=6, ContainsA1=7 }
+    public enum FilterType { ContainsA3=0,
+                             ContainsA5 =1,
+                             ContainsA4 =2,
+                             StartsD =3,
+                             StartsNH =4,
+                             StartsC =5,
+                             ContainsA2 =6,
+                             ContainsA1 =7 }
 
     [Table("PrintProfiles")]
     public partial class PrintProfile
@@ -13,6 +20,7 @@ namespace PrintQueueManager.Data
         public PrintProfile()
         {
             ProfileOrders = new HashSet<ProfileOrder>();
+            ProfileFilters = new HashSet<Filter>();
         }
 
         [Key]

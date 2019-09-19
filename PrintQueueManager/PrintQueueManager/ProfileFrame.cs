@@ -1220,6 +1220,19 @@ namespace PrintQueueManager
         {
             Program.mainForm.DeleteProfile(txtProfileName.Text);
         }
+
+        private void BtnEditFilter_Click(object sender, EventArgs e)
+        {
+            var f = new FilterForm();
+            f.LoadData(Controller.profile.ProfileFilters.ToList());
+            if(f.ShowDialog() == DialogResult.OK)
+            {
+                var filterData = f.GetFilterData();
+                Controller.profile.ProfileFilters = filterData;
+                Controller.db.Update(Controller.profile);
+                Controller.db.SaveChanges();
+            }
+        }
     }
 
     class PrintRunData

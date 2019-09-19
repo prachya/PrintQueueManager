@@ -26,6 +26,17 @@ namespace PrintQueueManager.Data
             }
         }
 
+        public void Backup()
+        {
+            var destFile = "data" + DateTime.Now.ToString("ddmmyyss") + ".sdf";
+#if DEBUG
+            System.IO.File.Copy(@"C:\projects2\PrintQueueManager\PrintQueueManager\data.sdf", 
+                                @"C:\projects2\PrintQueueManager\PrintQueueManager\" + destFile);
+#else
+            System.IO.File.Copy("data.sdf", destFile);
+#endif
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Order>(entity =>

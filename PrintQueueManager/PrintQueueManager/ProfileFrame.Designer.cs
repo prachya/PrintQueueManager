@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProfileFrame));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panel1 = new System.Windows.Forms.Panel();
             this.cmbPrintRun = new System.Windows.Forms.ComboBox();
             this.label11 = new System.Windows.Forms.Label();
@@ -39,6 +39,8 @@
             this.btnMove = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.label12 = new System.Windows.Forms.Label();
+            this.btnDeleteProfile = new System.Windows.Forms.Button();
             this.btnKill = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.maskedTextBox2 = new System.Windows.Forms.MaskedTextBox();
@@ -48,8 +50,6 @@
             this.button3 = new System.Windows.Forms.Button();
             this.lblStatus = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
-            this.btnDown = new System.Windows.Forms.Button();
-            this.btnUp = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.cmbPrinter = new System.Windows.Forms.ComboBox();
             this.cmbPresets = new System.Windows.Forms.ComboBox();
@@ -94,9 +94,10 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.startPrintTimer = new System.Windows.Forms.Timer(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
+            this.btnDown = new System.Windows.Forms.Button();
+            this.btnUp = new System.Windows.Forms.Button();
             this.orderBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.btnDeleteProfile = new System.Windows.Forms.Button();
-            this.label12 = new System.Windows.Forms.Label();
+            this.btnEditFilter = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel4.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -107,6 +108,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.btnEditFilter);
             this.panel1.Controls.Add(this.cmbPrintRun);
             this.panel1.Controls.Add(this.label11);
             this.panel1.Controls.Add(this.btnChangePrintStatus);
@@ -203,6 +205,25 @@
             this.panel4.Size = new System.Drawing.Size(403, 111);
             this.panel4.TabIndex = 14;
             // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(146, 84);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(40, 13);
+            this.label12.TabIndex = 23;
+            this.label12.Text = "Status:";
+            // 
+            // btnDeleteProfile
+            // 
+            this.btnDeleteProfile.Location = new System.Drawing.Point(281, 10);
+            this.btnDeleteProfile.Name = "btnDeleteProfile";
+            this.btnDeleteProfile.Size = new System.Drawing.Size(102, 23);
+            this.btnDeleteProfile.TabIndex = 22;
+            this.btnDeleteProfile.Text = "Delete Profile";
+            this.btnDeleteProfile.UseVisualStyleBackColor = true;
+            this.btnDeleteProfile.Click += new System.EventHandler(this.BtnDeleteProfile_Click);
+            // 
             // btnKill
             // 
             this.btnKill.Location = new System.Drawing.Point(189, 10);
@@ -292,28 +313,6 @@
             this.button2.Text = "Start";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // btnDown
-            // 
-            this.btnDown.Image = global::PrintQueueManager.Properties.Resources.if_arrow_full_down_103291_1_;
-            this.btnDown.Location = new System.Drawing.Point(43, 85);
-            this.btnDown.Name = "btnDown";
-            this.btnDown.Size = new System.Drawing.Size(35, 23);
-            this.btnDown.TabIndex = 11;
-            this.toolTip1.SetToolTip(this.btnDown, "Move selected item down.");
-            this.btnDown.UseVisualStyleBackColor = true;
-            this.btnDown.Click += new System.EventHandler(this.btnDown_Click);
-            // 
-            // btnUp
-            // 
-            this.btnUp.Image = ((System.Drawing.Image)(resources.GetObject("btnUp.Image")));
-            this.btnUp.Location = new System.Drawing.Point(6, 85);
-            this.btnUp.Name = "btnUp";
-            this.btnUp.Size = new System.Drawing.Size(33, 23);
-            this.btnUp.TabIndex = 10;
-            this.toolTip1.SetToolTip(this.btnUp, "Move selected item up.");
-            this.btnUp.UseVisualStyleBackColor = true;
-            this.btnUp.Click += new System.EventHandler(this.btnUp_Click);
             // 
             // button1
             // 
@@ -549,14 +548,14 @@
             this.orderGridView.AllowUserToDeleteRows = false;
             this.orderGridView.AllowUserToResizeRows = false;
             this.orderGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.orderGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.orderGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.orderGridView.ColumnHeadersHeight = 40;
             this.orderGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.orderGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -676,8 +675,8 @@
             // 
             this.Linked.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.Linked.DataPropertyName = "Linked";
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Linked.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Linked.DefaultCellStyle = dataGridViewCellStyle4;
             this.Linked.HeaderText = "Linked";
             this.Linked.Name = "Linked";
             this.Linked.ReadOnly = true;
@@ -777,28 +776,41 @@
             this.timer2.Interval = 60000;
             this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
             // 
+            // btnDown
+            // 
+            this.btnDown.Image = global::PrintQueueManager.Properties.Resources.if_arrow_full_down_103291_1_;
+            this.btnDown.Location = new System.Drawing.Point(43, 85);
+            this.btnDown.Name = "btnDown";
+            this.btnDown.Size = new System.Drawing.Size(35, 23);
+            this.btnDown.TabIndex = 11;
+            this.toolTip1.SetToolTip(this.btnDown, "Move selected item down.");
+            this.btnDown.UseVisualStyleBackColor = true;
+            this.btnDown.Click += new System.EventHandler(this.btnDown_Click);
+            // 
+            // btnUp
+            // 
+            this.btnUp.Image = ((System.Drawing.Image)(resources.GetObject("btnUp.Image")));
+            this.btnUp.Location = new System.Drawing.Point(6, 85);
+            this.btnUp.Name = "btnUp";
+            this.btnUp.Size = new System.Drawing.Size(33, 23);
+            this.btnUp.TabIndex = 10;
+            this.toolTip1.SetToolTip(this.btnUp, "Move selected item up.");
+            this.btnUp.UseVisualStyleBackColor = true;
+            this.btnUp.Click += new System.EventHandler(this.btnUp_Click);
+            // 
             // orderBindingSource
             // 
             this.orderBindingSource.DataSource = typeof(PrintQueueManager.Data.Order);
             // 
-            // btnDeleteProfile
+            // btnEditFilter
             // 
-            this.btnDeleteProfile.Location = new System.Drawing.Point(281, 10);
-            this.btnDeleteProfile.Name = "btnDeleteProfile";
-            this.btnDeleteProfile.Size = new System.Drawing.Size(102, 23);
-            this.btnDeleteProfile.TabIndex = 22;
-            this.btnDeleteProfile.Text = "Delete Profile";
-            this.btnDeleteProfile.UseVisualStyleBackColor = true;
-            this.btnDeleteProfile.Click += new System.EventHandler(this.BtnDeleteProfile_Click);
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(146, 84);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(40, 13);
-            this.label12.TabIndex = 23;
-            this.label12.Text = "Status:";
+            this.btnEditFilter.Location = new System.Drawing.Point(663, 12);
+            this.btnEditFilter.Name = "btnEditFilter";
+            this.btnEditFilter.Size = new System.Drawing.Size(23, 23);
+            this.btnEditFilter.TabIndex = 20;
+            this.btnEditFilter.Text = "...";
+            this.btnEditFilter.UseVisualStyleBackColor = true;
+            this.btnEditFilter.Click += new System.EventHandler(this.BtnEditFilter_Click);
             // 
             // ProfileFrame
             // 
@@ -892,5 +904,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Remark;
         private System.Windows.Forms.Label label12;
         public System.Windows.Forms.Button btnDeleteProfile;
+        private System.Windows.Forms.Button btnEditFilter;
     }
 }

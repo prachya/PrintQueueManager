@@ -69,7 +69,8 @@ namespace PrintQueueManager
 
         public void DeleteFromDatabase()
         {
-            db.PrintProfiles.Remove(profile);
+            
+            db.PrintProfiles.Remove(profile);               
             db.SaveChanges();
         }
 

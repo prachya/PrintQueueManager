@@ -32,20 +32,20 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.grdStartsWith = new System.Windows.Forms.DataGridView();
             this.FilterValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridView2 = new System.Windows.Forms.DataGridView();
+            this.grdEndsWith = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridView3 = new System.Windows.Forms.DataGridView();
+            this.grdContains = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridView4 = new System.Windows.Forms.DataGridView();
+            this.grdDoesnotContain = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grdStartsWith)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grdEndsWith)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grdContains)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grdDoesnotContain)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -84,60 +84,61 @@
             this.label4.TabIndex = 4;
             this.label4.Text = "Does not contain:";
             // 
-            // dataGridView1
+            // grdStartsWith
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.grdStartsWith.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.grdStartsWith.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.FilterValue});
-            this.dataGridView1.Location = new System.Drawing.Point(21, 32);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(303, 93);
-            this.dataGridView1.TabIndex = 5;
+            this.grdStartsWith.Location = new System.Drawing.Point(21, 32);
+            this.grdStartsWith.Name = "grdStartsWith";
+            this.grdStartsWith.Size = new System.Drawing.Size(303, 93);
+            this.grdStartsWith.TabIndex = 5;
+            this.grdStartsWith.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GrdStartsWith_KeyDown);
             // 
             // FilterValue
             // 
             this.FilterValue.HeaderText = "Value";
             this.FilterValue.Name = "FilterValue";
             // 
-            // dataGridView2
+            // grdEndsWith
             // 
-            this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView2.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.grdEndsWith.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.grdEndsWith.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dataGridViewTextBoxColumn1});
-            this.dataGridView2.Location = new System.Drawing.Point(21, 148);
-            this.dataGridView2.Name = "dataGridView2";
-            this.dataGridView2.Size = new System.Drawing.Size(303, 87);
-            this.dataGridView2.TabIndex = 6;
+            this.grdEndsWith.Location = new System.Drawing.Point(21, 148);
+            this.grdEndsWith.Name = "grdEndsWith";
+            this.grdEndsWith.Size = new System.Drawing.Size(303, 87);
+            this.grdEndsWith.TabIndex = 6;
             // 
             // dataGridViewTextBoxColumn1
             // 
             this.dataGridViewTextBoxColumn1.HeaderText = "Value";
             this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
             // 
-            // dataGridView3
+            // grdContains
             // 
-            this.dataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView3.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.grdContains.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.grdContains.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dataGridViewTextBoxColumn2});
-            this.dataGridView3.Location = new System.Drawing.Point(21, 259);
-            this.dataGridView3.Name = "dataGridView3";
-            this.dataGridView3.Size = new System.Drawing.Size(303, 84);
-            this.dataGridView3.TabIndex = 7;
+            this.grdContains.Location = new System.Drawing.Point(21, 259);
+            this.grdContains.Name = "grdContains";
+            this.grdContains.Size = new System.Drawing.Size(303, 84);
+            this.grdContains.TabIndex = 7;
             // 
             // dataGridViewTextBoxColumn2
             // 
             this.dataGridViewTextBoxColumn2.HeaderText = "Value";
             this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
             // 
-            // dataGridView4
+            // grdDoesnotContain
             // 
-            this.dataGridView4.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView4.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.grdDoesnotContain.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.grdDoesnotContain.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dataGridViewTextBoxColumn3});
-            this.dataGridView4.Location = new System.Drawing.Point(21, 376);
-            this.dataGridView4.Name = "dataGridView4";
-            this.dataGridView4.Size = new System.Drawing.Size(303, 78);
-            this.dataGridView4.TabIndex = 8;
+            this.grdDoesnotContain.Location = new System.Drawing.Point(21, 376);
+            this.grdDoesnotContain.Name = "grdDoesnotContain";
+            this.grdDoesnotContain.Size = new System.Drawing.Size(303, 78);
+            this.grdDoesnotContain.TabIndex = 8;
             // 
             // dataGridViewTextBoxColumn3
             // 
@@ -171,20 +172,20 @@
             this.ClientSize = new System.Drawing.Size(357, 511);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.dataGridView4);
-            this.Controls.Add(this.dataGridView3);
-            this.Controls.Add(this.dataGridView2);
-            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.grdDoesnotContain);
+            this.Controls.Add(this.grdContains);
+            this.Controls.Add(this.grdEndsWith);
+            this.Controls.Add(this.grdStartsWith);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Name = "FilterForm";
             this.Text = "Profile Filters";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grdStartsWith)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grdEndsWith)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grdContains)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grdDoesnotContain)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -196,13 +197,13 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView grdStartsWith;
         private System.Windows.Forms.DataGridViewTextBoxColumn FilterValue;
-        private System.Windows.Forms.DataGridView dataGridView2;
+        private System.Windows.Forms.DataGridView grdEndsWith;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridView dataGridView3;
+        private System.Windows.Forms.DataGridView grdContains;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
-        private System.Windows.Forms.DataGridView dataGridView4;
+        private System.Windows.Forms.DataGridView grdDoesnotContain;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button1;

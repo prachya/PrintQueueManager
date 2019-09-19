@@ -111,11 +111,21 @@ namespace PrintQueueManager
             {
                 foreach (var tab in tabControl1.TabPages.OfType<TabPage>())
                 {
-                    if((tab.Controls[0] as ProfileFrame).Name == ProfileName)
+                    if((tab.Controls[0] as ProfileFrame).txtProfileName.Text == ProfileName)
                     {
-                        var controller = (tab.Controls[0] as ProfileFrame).Controller;
-                        tabControl1.TabPages.Remove(tab);
-                        this.ProfileControllers.Remove(controller);
+                        try
+                        {
+                            var controller = (tab.Controls[0] as ProfileFrame).Controller;
+                            tabControl1.TabPages.Remove(tab);
+                            db.Backup();
+                            controller.DeleteFromDatabase();
+                            this.ProfileControllers.Remove(controller);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("error deleting Profile " + ex.Message);
+                        }
+                        
                         break;
                     }
                 }
@@ -161,7 +171,7 @@ namespace PrintQueueManager
                 return null;
             }
 
-            profileData.FilterType = lst.First(); // FilterType.ContainsA3;
+            profileData.FilterType = lst.First();
 
             db.Add(profileData);
             db.SaveChanges();
@@ -187,12 +197,9 @@ namespace PrintQueueManager
         private void newProfileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //
-
             var ctrl = CreateProfileController();
             if (ctrl != null)
                 ctrl.Show();
-
-
         }
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
