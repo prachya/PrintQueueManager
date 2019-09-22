@@ -12,6 +12,7 @@ namespace PrintQueueManager.Data
         public virtual DbSet<Preset> Presets { get; set; }
         public virtual DbSet<PresetPrinter> PresetPrinters { get; set; }
         public virtual DbSet<Filter> Filters { get; set; }
+        public virtual DbSet<IgnoreLinkingText> IgnoreLinkingTexts { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -73,31 +74,32 @@ namespace PrintQueueManager.Data
                     .HasMaxLength(150);
             });
 
-            modelBuilder.Entity<ProfileOrder>(entity =>
-            {
-                entity.Property(e => e.Reserved1).HasMaxLength(50);
+            //modelBuilder.Entity<ProfileOrder>(entity =>
+            //{
+            //    entity.Property(e => e.Reserved1).HasMaxLength(50);
 
-                entity.HasOne(d => d.Order)
-                    .WithMany(p => p.ProfileOrders)
-                    .HasForeignKey(d => d.OrderId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ProfileOrders_ToTable_1");
+            //    entity.HasOne(d => d.Order)
+            //        .WithMany(p => p.ProfileOrders)
+            //        .HasForeignKey(d => d.OrderId)
+            //        .OnDelete(DeleteBehavior.ClientSetNull)
+            //        .HasConstraintName("FK_ProfileOrders_ToTable_1");
 
-                entity.HasOne(d => d.Profile)
-                    .WithMany(p => p.ProfileOrders)
-                    .HasForeignKey(d => d.ProfileId)
-                    .HasConstraintName("FK_ProfileOrders_ToTable");
+            //    entity.HasOne(d => d.Profile)
+            //        .WithMany(p => p.ProfileOrders)
+            //        .HasForeignKey(d => d.ProfileId)
+            //        .HasConstraintName("FK_ProfileOrders_ToTable");
                 
-            });
+            //});
 
 
-            modelBuilder.Entity<Filter>(entity =>
-            {
-                entity.HasOne(d => d.Profile)
-                    .WithMany(p => p.ProfileFilters)
-                    .HasForeignKey(d => d.ProfileId)
-                    .HasConstraintName("FK_Profile_ToTable");
-            });
+            
+            //modelBuilder.Entity<Filter>(entity =>
+            //{
+            //    entity.HasOne(d => d.Profile)
+            //        .WithMany(p => p.ProfileFilters)
+            //        .HasForeignKey(d => d.ProfileId)
+            //        .HasConstraintName("FK_Profile_ToTable");
+            //});
 
 
         }

@@ -46,6 +46,8 @@ namespace PrintQueueManager.Data
         public string PrintRun { get; set; }
 
         public ICollection<ProfileOrder> ProfileOrders { get; set; }
+
         public ICollection<Filter> ProfileFilters { get; set; }
+        public ICollection<IgnoreLinkingText> IgnoreLinkingTexts { get; set; }
     }
 }

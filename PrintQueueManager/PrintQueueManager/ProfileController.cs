@@ -437,6 +437,47 @@ namespace PrintQueueManager
             LoadProfileOrders();     
         }
       
+        public static IEnumerable<Order> GetOrdersInProfile(PrintProfile profile,IEnumerable<Order> orders)
+        {
+            IList<Order> inProfileList = new List<Order>();
+            foreach (var order in orders)
+            {
+                bool orderInProfile = false;
+                foreach (var item in profile.ProfileFilters)
+                {
+                    if (!string.IsNullOrEmpty(item.StartsWith))
+                    {
+                        orderInProfile = (order.Sku.StartsWith(item.StartsWith));
+                        if (orderInProfile)
+                            break;
+                    }
+
+                    if (!String.IsNullOrEmpty( item.EndsWith))
+                    {
+                        orderInProfile = (order.Sku.EndsWith(item.EndsWith));
+                        if (orderInProfile)
+                            break;
+                    }
+
+                    if (!string.IsNullOrEmpty(item.Contains))
+                    {
+                        orderInProfile = order.Sku.Contains(item.Contains);
+                        if (orderInProfile)
+                            break;
+                    }
+                    else if(!string.IsNullOrEmpty(item.DoesNotContain))
+                    {
+                        orderInProfile = !order.Sku.Contains(item.DoesNotContain);
+                        if (orderInProfile)
+                            break;
+                    }
+                }
+                if (orderInProfile==true)
+                    inProfileList.Add(order);
+            }
+
+            return inProfileList;   
+        }
         private async Task<bool> PrintNext()
         {
             //var printItem = CurrentList.Where(d => d.ProfileOrder.PrintingStatus == Data.PrintingStatus.Pending).LastOrDefault();

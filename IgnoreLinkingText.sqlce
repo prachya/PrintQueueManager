@@ -1,0 +1,10 @@
+﻿-- Script Date: 23/09/2019 02:07  - ErikEJ.SqlCeScripting version 3.5.2.81
+CREATE TABLE [IgnoreLinkingTexts] (
+  [Id] int IDENTITY (1,1) NOT NULL
+, [IgnoreText] nvarchar(100) NULL
+, [ProfileId] int NULL
+, CONSTRAINT [FK_Profile_ToLikingText] FOREIGN KEY ([ProfileId]) REFERENCES [PrintProfiles]([Id]) ON DELETE CASCADE 
+);
+GO
+ALTER TABLE [IgnoreLinkingTexts] ADD CONSTRAINT [PK_IgnoreLinkingTexts] PRIMARY KEY ([Id]);
+GO

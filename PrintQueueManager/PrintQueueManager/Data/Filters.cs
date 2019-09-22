@@ -26,7 +26,10 @@ namespace PrintQueueManager.Data
         public string EndsWith { get; set; }
         public string Contains { get; set; }
         public string DoesNotContain { get; set; }
+
+       // [ForeignKey("PrintProfile")]
         public int ProfileId { get; set; }
+
         [ForeignKey("ProfileId")]
         public PrintProfile Profile { get; set; }
     }

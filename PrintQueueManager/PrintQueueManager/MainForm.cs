@@ -80,7 +80,7 @@ namespace PrintQueueManager
 
         private void LoadProfileTabs()
         {
-            var profiles = db.PrintProfiles.Include(d => d.ProfileOrders).ThenInclude(d => d.Order);
+            var profiles = db.PrintProfiles.Include(d=>d.ProfileFilters).Include(d => d.ProfileOrders).ThenInclude(d => d.Order);
 
             foreach (var item in profiles)
             {
@@ -234,7 +234,12 @@ namespace PrintQueueManager
 
             // filters already imporeted items out. we use OrderId + Sku as unique key.
             // 
+#if DEBUG
+            var newOrderList = importedList.ToList();
+#else
+
             var newOrderList = importedList.Where(d => !db.Orders.Any(a => (a.OrderId.ToString() + a.Sku.ToString()) == (d.OrderId.ToString() + d.Sku.ToString()) ) ).ToList();
+#endif
 
             // sort by order time
             //
@@ -254,9 +259,13 @@ namespace PrintQueueManager
 
             var addedList = new List<Order>();
 
-            // 
+             // 
             foreach (var profile in db.PrintProfiles)
             {
+                IEnumerable<Order> addList = null;
+                addList = ProfileController.GetOrdersInProfile(profile, newOrderList);
+
+                /*
                 IEnumerable<Order> addList = null;
                 var ci = new System.Globalization.CultureInfo("en-US");
                 if (profile.FilterType == FilterType.ContainsA3)
@@ -295,6 +304,7 @@ namespace PrintQueueManager
                 {
                     ;
                 }
+                */
                 // addList = importedList.Where(d => d.Sku.Contains("A4")); //TODO: warning !, this should not be.
 
                 newOrderList.RemoveAll(d => addList.Contains(d)); // addList.Any(v => v == d));
