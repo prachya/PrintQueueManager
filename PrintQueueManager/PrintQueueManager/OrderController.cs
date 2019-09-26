@@ -16,14 +16,15 @@ namespace PrintQueueManager
             this.db = db;  
         }
 
-        public bool SaveOrders(IEnumerable<Order> orders)
+        public bool SaveOrders(IEnumerable<Order> orders, bool commit = true)
         {
             db.AddRange(orders);
             //foreach (var item in orders) {
             //    db.Add(item);
             //    db.SaveChanges();
             //}
-            db.SaveChanges();
+            if(commit)
+                db.SaveChanges();
 
             return true;
         }

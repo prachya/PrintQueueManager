@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define OLD_FILTER
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,6 +18,8 @@ using System.Drawing.Printing;
 using System.Runtime.Serialization.Formatters.Binary;
 using TallComponents.PDF.Rasterizer;
 using System.Drawing.Drawing2D;
+
+
 
 namespace PrintQueueManager
 {
@@ -80,7 +84,9 @@ namespace PrintQueueManager
 
         private void LoadProfileTabs()
         {
-            var profiles = db.PrintProfiles.Include(d=>d.ProfileFilters).Include(d => d.ProfileOrders).ThenInclude(d => d.Order);
+            var profiles = db.PrintProfiles.Include(d=>d.ProfileFilters)
+                                           .Include(d=>d.IgnoreLinkingTexts)
+                                           .Include(d => d.ProfileOrders).ThenInclude(d => d.Order);
 
             foreach (var item in profiles)
             {
@@ -107,7 +113,7 @@ namespace PrintQueueManager
 
         public void DeleteProfile(string ProfileName)
         {
-            if (MessageBox.Show("Please confirm deleting profile " + ProfileName, "Delete Profile", MessageBoxButtons.OKCancel) == DialogResult.OK)
+            if (MessageBox.Show("Please confirm deleting profile " + ProfileName + " NOTE: all orders in the profile will also be deleted!", "Delete Profile", MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
                 foreach (var tab in tabControl1.TabPages.OfType<TabPage>())
                 {
@@ -235,6 +241,7 @@ namespace PrintQueueManager
             // filters already imporeted items out. we use OrderId + Sku as unique key.
             // 
 #if DEBUG
+            //return;
             var newOrderList = importedList.ToList();
 #else
 
@@ -248,12 +255,12 @@ namespace PrintQueueManager
             var order = new OrderController(db);
             // check if PDFs linked
             //
-            foreach (var item in newOrderList)
-            {
-                item.Linked = File.Exists(config.PDFFolder + item.Sku + ".pdf");
-            }
+            //foreach (var item in newOrderList)
+            //{
+            //    item.Linked = File.Exists(config.PDFFolder + item.Sku + ".pdf");
+            //}
 
-            order.SaveOrders(newOrderList);
+            order.SaveOrders(newOrderList); //, false);
 
             log.AddMessage("no. of records to import " + newOrderList.Count());
 
@@ -263,10 +270,15 @@ namespace PrintQueueManager
             foreach (var profile in db.PrintProfiles)
             {
                 IEnumerable<Order> addList = null;
+#if !OLD_FILTER
                 addList = ProfileController.GetOrdersInProfile(profile, newOrderList);
+#endif
 
-                /*
-                IEnumerable<Order> addList = null;
+#if OLD_FILTER
+
+#if DEBUG
+                var lll = newOrderList.Where(d => d.Sku.Contains("A5"));
+#endif
                 var ci = new System.Globalization.CultureInfo("en-US");
                 if (profile.FilterType == FilterType.ContainsA3)
                 {
@@ -304,8 +316,9 @@ namespace PrintQueueManager
                 {
                     ;
                 }
-                */
-                // addList = importedList.Where(d => d.Sku.Contains("A4")); //TODO: warning !, this should not be.
+
+                // addList = importedList.Where(d => d.Sku.Contains("A4")); //TODO: warning !, this should not be.                
+#endif
 
                 newOrderList.RemoveAll(d => addList.Contains(d)); // addList.Any(v => v == d));
                 if (addList != null && addList.Any())
@@ -313,7 +326,11 @@ namespace PrintQueueManager
                 else
                     continue;
 
+                if (!addList.Any())
+                    continue;
 
+                // finds the next printing order.
+                //
                 var pendingList = db.ProfileOrders.Where(d => d.ProfileId == profile.Id
                                                                 && (d.PrintingStatus == Data.PrintingStatus.Pending
                                                                  || d.PrintingStatus == Data.PrintingStatus.Printing));
@@ -321,10 +338,25 @@ namespace PrintQueueManager
                 if (pendingList.Any())
                     lastPrintingOrder = pendingList.Max(d => d.PrintingOrder);
 
+                // assign the orders to the profile.
+                //
                 foreach (var item in addList.Reverse())
                 {
                     var profileId = profile.Id;
                     var profiledOrder = new ProfileOrder();
+                    var filePath = config.PDFFolder + ProfileController.RemoveIgnoreText(profile, item.Sku) + ".pdf";
+                    item.Linked = File.Exists(filePath);
+                    if (item.Linked)
+                    {
+                        db.Update(item);
+                        //db.SaveChanges();
+                    }
+#if DEBUG
+                    if(item.Sku.StartsWith("P") && (profile.IgnoreLinkingTexts.Count > 0))
+                    {
+                        var test = "";
+                    }
+#endif
                     profiledOrder.OrderId = item.Id;
                     profiledOrder.ProfileId = profileId;
                     
@@ -337,10 +369,11 @@ namespace PrintQueueManager
                     profiledOrder.PrintingOrder = ++lastPrintingOrder;
 
                     db.Add(profiledOrder);
-                    db.SaveChanges();
-                }
+                    
+                }                
             }
 
+            db.SaveChanges();
             log.AddMessage("no. of records imported " + addedList.Count()); 
 
             //var unAddedList = newOrderList.Where(d => !addedList.Any(x => x == d));
@@ -542,7 +575,11 @@ namespace PrintQueueManager
             log = new LogForm();
             log.Show();
 
+#if DEBUG
+            timCheckFTP.Interval = ((2 * 60) * 1000); 
+#else
             timCheckFTP.Interval = ((config.CheckInterval * 60) * 1000);
+#endif
             timCheckFTP.Start();
 
         }

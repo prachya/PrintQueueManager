@@ -172,6 +172,7 @@
     </Compile>
     <Compile Include="dataContext.cs" />
     <Compile Include="Data\Filters.cs" />
+    <Compile Include="Data\IgnoreLinkingText.cs" />
     <Compile Include="Data\Presets.cs" />
     <Compile Include="Data\PrinterSpeedData.cs" />
     <Compile Include="DevCap.cs" />

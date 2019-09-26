@@ -20,17 +20,44 @@ namespace PrintQueueManager
 
         public void LoadData(IList<Filter> filterData)
         {
+            //grdStartsWith.Rows.Clear();
             foreach(var filterItem in filterData)
             {
-                if (filterItem.StartsWith != "")
+                if (!string.IsNullOrEmpty( filterItem.StartsWith ))
                     grdStartsWith.Rows.Add(filterItem.StartsWith);
-                if (filterItem.EndsWith != "")
+                if (!string.IsNullOrEmpty(filterItem.EndsWith))
                     grdEndsWith.Rows.Add(filterItem.EndsWith);
-                if (filterItem.Contains != "")
+                if (!string.IsNullOrEmpty(filterItem.Contains))
                     grdContains.Rows.Add(filterItem.Contains);
-                if (filterItem.DoesNotContain != "")
+                if (!string.IsNullOrEmpty(filterItem.DoesNotContain))
                     grdDoesnotContain.Rows.Add(filterItem.DoesNotContain);
             }
+        }
+
+        public void LoadLinkedSKU(IList<IgnoreLinkingText> lst)
+        {
+            foreach (var item in lst)
+            {
+                if (!string.IsNullOrEmpty(item.IgnoreText))
+                    grdIgnoredText.Rows.Add(item.IgnoreText);
+            }
+        }
+
+        public List<IgnoreLinkingText> GetLinkedSKUFilters()
+        {
+            var lst = new List<IgnoreLinkingText>();
+
+            foreach (DataGridViewRow item in grdIgnoredText.Rows)
+            {
+                var row = new IgnoreLinkingText();
+
+                if (!item.IsNewRow)
+                {
+                    row.IgnoreText = item.Cells[0].Value.ToString();
+                    lst.Add(row);
+                }
+            }
+            return lst;
         }
 
         public List<Filter> GetFilterData()
@@ -41,17 +68,23 @@ namespace PrintQueueManager
             {
                 var row = new Filter();
                 
-                if (!item.IsNewRow)
+                if (!item.IsNewRow && (item.Cells["FilterValue"].Value != null))
                 {
-                    row.StartsWith = item.Cells["FilterValue"].Value.ToString();
-                    lst.Add(row);
+                    
+                    if (item.Cells["FilterValue"].Value.ToString() != "")
+                    {
+                        row.StartsWith = item.Cells["FilterValue"].Value.ToString();
+                        lst.Add(row);
+                    }
+                    
                 }
             }
 
             var idx = 0;
             foreach (DataGridViewRow item in grdEndsWith.Rows)
             {
-                if (!item.IsNewRow)
+                if (!item.IsNewRow  && (item.Cells[0].Value != null) 
+                                    && (item.Cells[0].Value.ToString() != ""))
                 {
                     Filter row = null;
                     if (idx >= lst.Count())
@@ -61,6 +94,7 @@ namespace PrintQueueManager
                     }
                     else
                         row = lst[idx];
+
                     row.EndsWith = item.Cells[0].Value.ToString();
                     ++idx;
                 }
@@ -69,7 +103,8 @@ namespace PrintQueueManager
             idx = 0;
             foreach (DataGridViewRow item in grdContains.Rows)
             {
-                if (!item.IsNewRow)
+                if (!item.IsNewRow && (item.Cells[0].Value != null)
+                                   && (item.Cells[0].Value.ToString() != ""))
                 {
                     Filter row = null;
                     if (idx >= lst.Count())
@@ -87,7 +122,8 @@ namespace PrintQueueManager
             idx = 0;
             foreach (DataGridViewRow item in grdDoesnotContain.Rows)
             {
-                if (!item.IsNewRow)
+                if (!item.IsNewRow && (item.Cells[0].Value != null)
+                                   && (item.Cells[0].Value.ToString() != ""))
                 {
                     Filter row = null;
                     if (idx >= lst.Count())
@@ -107,13 +143,39 @@ namespace PrintQueueManager
 
         private void GrdStartsWith_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Delete)
+            HandleDeleteKey(sender,e.KeyCode);
+            
+        }
+
+        private void HandleDeleteKey(object grid,Keys code)
+        {
+            if (code == Keys.Delete)
             {
-                var r = ((DataGridView)sender).CurrentRow; //.SelectedRows[0];
-                if(r != null)
-                    ((DataGridView)sender).Rows.Remove(r);
-   
+                var r = ((DataGridView)grid).CurrentRow; //.SelectedRows[0];
+                if (r != null)
+                    ((DataGridView)grid).Rows.Remove(r);
+
             }
+        }
+
+        private void GrdEndsWith_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            
+        }
+
+        private void GrdEndsWith_KeyDown(object sender, KeyEventArgs e)
+        {
+            HandleDeleteKey(sender, e.KeyCode);
+        }
+
+        private void GrdContains_KeyDown(object sender, KeyEventArgs e)
+        {
+            HandleDeleteKey(sender, e.KeyCode);
+        }
+
+        private void GrdIgnoredText_KeyDown(object sender, KeyEventArgs e)
+        {
+            HandleDeleteKey(sender, e.KeyCode);
         }
     }
 }

@@ -35,6 +35,28 @@ namespace PrintQueueManager
             MakePrintingsToPendings();
         }
 
+        public void SetFilterData(List<Filter> filterData)
+        {
+            //profile.ProfileFilters.Clear();
+            //foreach (var item in profile.ProfileFilters)
+            //{
+            //    db.Remove(item);
+            //    db.SaveChanges();
+            //}
+            
+
+            profile.ProfileFilters = filterData;
+            db.Update(profile); //.ProfileFilters);
+            db.SaveChanges();
+        }
+
+        public void SetLinkedFilters(List<IgnoreLinkingText> ignoredTextList)
+        {
+            profile.IgnoreLinkingTexts = ignoredTextList;
+            db.Update(profile); //.ProfileFilters);
+            db.SaveChanges();
+        }
+
         private void MakePrintingsToPendings()
         {
             foreach(var item in profile.ProfileOrders)
@@ -154,7 +176,7 @@ namespace PrintQueueManager
             profileOrder.PrintingOrder = downOrder.PrintingOrder;
             downOrder.ProfileOrder.PrintingOrder = upPrintingOrder;
 
-            db.Update(downOrder.ProfileOrder);
+            //db.Update(downOrder.ProfileOrder);
             db.Update(profileOrder);
             db.SaveChanges();
 
@@ -179,45 +201,52 @@ namespace PrintQueueManager
 
         }
 
-        public void ChangeToPaused(ProfileOrder profileOrder)
+        public void ChangeToPaused(IEnumerable<ProfileOrder> profileOrders)
         {
-
-            profileOrder.Order.OrderStatus = OrderStatus.Paused;
-            profileOrder.PrintingStatus = Data.PrintingStatus.Paused;
-            db.Update(profileOrder.Order);
-            db.Update(profileOrder);
-            db.SaveChanges();
-
-        }
-
-        public void ChangeToComplete(ProfileOrder profileOrder)
-        {
-            profileOrder.Order.OrderStatus = OrderStatus.Complete;
-            profileOrder.PrintingStatus = Data.PrintingStatus.Complete;
-            profileOrder.PrintingOrder = 0;
-            //profileOrder.Order.CompletedDateTime = 
-            db.Update(profileOrder.Order);
-            db.Update(profileOrder);
+            foreach(var profileOrder in profileOrders)
+            {
+                profileOrder.Order.OrderStatus = OrderStatus.Paused;
+                profileOrder.PrintingStatus = Data.PrintingStatus.Paused;
+                //db.Update(profileOrder.Order);
+                db.Update(profileOrder);
+            }            
             db.SaveChanges();
         }
 
-        public void ChangeToPending(ProfileOrder profileOrder)
+        public void ChangeToComplete(IEnumerable<ProfileOrder> profileOrders)
+        {
+            foreach (var profileOrder in profileOrders)
+            {
+                profileOrder.Order.OrderStatus = OrderStatus.Complete;
+                profileOrder.PrintingStatus = Data.PrintingStatus.Complete;
+                profileOrder.PrintingOrder = 0;
+                //profileOrder.Order.CompletedDateTime = 
+                //db.Update(profileOrder.Order);
+                db.Update(profileOrder);
+            }
+            db.SaveChanges();
+        }
+
+        public void ChangeToPending(IEnumerable<ProfileOrder> profileOrders)
         {
             //var pendingList = db.ProfileOrders.Where(d => d.ProfileId == profile.Id
             //                                                        && (d.PrintingStatus == Data.PrintingStatus.Pending
             //                                                              || d.PrintingStatus == Data.PrintingStatus.Printing));
 
             //var wasComplete = profileOrder.Order.OrderStatus == OrderStatus.Complete;
-            if (profileOrder.Order.OrderStatus == OrderStatus.Complete)
+            
+
+            foreach (var profileOrder in profileOrders)
             {
-                profileOrder.PrintingOrder = GetNextLastPrintingOrder();
+                if (profileOrder.Order.OrderStatus == OrderStatus.Complete)
+                {
+                    profileOrder.PrintingOrder = GetNextLastPrintingOrder();
+                }
+                profileOrder.Order.OrderStatus = OrderStatus.Pending;
+                profileOrder.PrintingStatus = Data.PrintingStatus.Pending;
+                db.Update(profileOrder.Order);
+                db.Update(profileOrder);
             }
-
-            profileOrder.Order.OrderStatus = OrderStatus.Pending;
-            profileOrder.PrintingStatus = Data.PrintingStatus.Pending;
-
-            db.Update(profileOrder.Order);
-            db.Update(profileOrder);
             db.SaveChanges();
             
 
@@ -249,9 +278,23 @@ namespace PrintQueueManager
 
         public void LoadProfileOrders()
         {
-        // recreate current list.
+            // recreate current list.
             CreateCurrentList();
             frame.LoadProfileOrders(CurrentList);
+        }
+
+        public static string RemoveIgnoreText(PrintProfile profile,string sku)
+        {
+            var res = sku;
+            foreach (var item in profile.IgnoreLinkingTexts)
+            {
+                if (sku.StartsWith(item.IgnoreText))
+                {
+                    res = sku.Substring(item.IgnoreText.Length);
+                    break;
+                }
+            }
+            return res;
         }
 
         public ProfileOrder Remove(int ProfileOrderId)
@@ -429,9 +472,8 @@ namespace PrintQueueManager
             var lst = db.ProfileOrders.Include(d=>d.Order).Where(d => d.ProfileId == profile.Id && d.Order.OrderStatus != OrderStatus.Complete);
             foreach(var item in lst)
             {
-                item.Order.Linked = System.IO.File.Exists(mainForm.config.PDFFolder + item.Order.Sku + ".pdf");
-                db.Update(item.Order);
-                
+                item.Order.Linked = System.IO.File.Exists(mainForm.config.PDFFolder + ProfileController.RemoveIgnoreText(profile,item.Order.Sku) + ".pdf");
+                db.Update(item.Order);                
             }
             db.SaveChanges();
             LoadProfileOrders();     

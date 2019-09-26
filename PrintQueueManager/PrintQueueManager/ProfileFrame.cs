@@ -509,7 +509,8 @@ namespace PrintQueueManager
                     //var r = orderGridView.Rows.OfType<DataGridViewRow>().SingleOrDefault(d => d.Index == e.RowIndex);
                     if (r != null && (r.DataBoundItem as PrintItemDataRow).PrintingStatus == "Paused")
                     {
-                        if(MessageBox.Show("Please confirm change the selected item to 'Pending'.","Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, 
+                        if(MessageBox.Show("Please confirm change the selected item to 'Pending'.","Confirm", 
+                                                                MessageBoxButtons.OKCancel, MessageBoxIcon.Information, 
                                                                 MessageBoxDefaultButton.Button1) == DialogResult.OK)
                         {
                             var printItem = (r.DataBoundItem as PrintItemDataRow);
@@ -524,8 +525,9 @@ namespace PrintQueueManager
 
 
                                 //printItem.profileOrder.PrintingStatus = "Pending";
-
-                                Controller.ChangeToPending(printItem.ProfileOrder);
+                                var lst = new List<ProfileOrder>();
+                                lst.Add(printItem.ProfileOrder);
+                                Controller.ChangeToPending(lst); // printItem.ProfileOrder);
                                 orderGridView.Refresh();
                             }
                         }
@@ -538,8 +540,9 @@ namespace PrintQueueManager
                                                                MessageBoxDefaultButton.Button1) == DialogResult.OK)
                         {
                             var printItem = (r.DataBoundItem as PrintItemDataRow);
-
-                            Controller.ChangeToPaused(printItem.ProfileOrder);
+                            var lst = new List<ProfileOrder>();
+                            lst.Add(printItem.ProfileOrder);
+                            Controller.ChangeToPaused(lst); // printItem.ProfileOrder);
                             orderGridView.Refresh();
                         }
 
@@ -1136,34 +1139,55 @@ namespace PrintQueueManager
             if (f.ShowDialog(this) == DialogResult.OK)
             {
                 ProfileOrder profileOrder;
-                foreach (DataGridViewRow item in orderGridView.SelectedRows)
+
+                var orderList = orderGridView.SelectedRows.OfType<DataGridViewRow>().Select(d => d.DataBoundItem).OfType<PrintItemDataRow>()
+                                                    .Where(d => d.ProfileOrder.PrintingStatus != PrintingStatus.Printing)
+                                                    .Select(d => d.ProfileOrder);
+
+                if (f.comboBox1.Text == "Pending")
                 {
-                    profileOrder = (item.DataBoundItem as PrintItemDataRow).ProfileOrder;
-                    if (profileOrder.PrintingStatus == PrintingStatus.Printing)
-                        continue;
-
-                    //var profileOrder = (orderGridView.CurrentRow.DataBoundItem as PrintItemDataRow).ProfileOrder;
-
-
-                    if (f.comboBox1.Text == "Pending")
-                    {
-                        Controller.ChangeToPending(profileOrder);
-                       // Controller.LoadProfileOrders();
-                    }
-                    else if (f.comboBox1.Text == "Paused")
-                    {
-                        Controller.ChangeToPaused(profileOrder);
-                        //orderGridView.Refresh();
-                    }
-                    else if (f.comboBox1.Text == "Complete")
-                    {
-                        Controller.ChangeToComplete(profileOrder);
-                        
-                    }
+                    Controller.ChangeToPending(orderList);
+                    // Controller.LoadProfileOrders();
+                }
+                else if (f.comboBox1.Text == "Paused")
+                {
+                    Controller.ChangeToPaused(orderList);
+                    //orderGridView.Refresh();
+                }
+                else if (f.comboBox1.Text == "Complete")
+                {
+                    Controller.ChangeToComplete(orderList);
                 }
 
-                Controller.LoadProfileOrders();
 
+                //foreach (DataGridViewRow item in orderGridView.SelectedRows)
+                //{
+                //    profileOrder = (item.DataBoundItem as PrintItemDataRow).ProfileOrder;
+                //    if (profileOrder.PrintingStatus == PrintingStatus.Printing)
+                //        continue;
+
+                //    //var profileOrder = (orderGridView.CurrentRow.DataBoundItem as PrintItemDataRow).ProfileOrder;
+
+
+                //    if (f.comboBox1.Text == "Pending")
+                //    {
+                //        Controller.ChangeToPending(profileOrder);
+                //       // Controller.LoadProfileOrders();
+                //    }
+                //    else if (f.comboBox1.Text == "Paused")
+                //    {
+                //        Controller.ChangeToPaused(profileOrder);
+                //        //orderGridView.Refresh();
+                //    }
+                //    else if (f.comboBox1.Text == "Complete")
+                //    {
+                //        Controller.ChangeToComplete(profileOrder);                        
+                //    }
+                //}
+
+                //Controller.LoadProfileOrders();
+
+                orderGridView.Refresh();
 
             }
         }
@@ -1225,12 +1249,14 @@ namespace PrintQueueManager
         {
             var f = new FilterForm();
             f.LoadData(Controller.profile.ProfileFilters.ToList());
-            if(f.ShowDialog() == DialogResult.OK)
+            f.LoadLinkedSKU(Controller.profile.IgnoreLinkingTexts.ToList());
+            if (f.ShowDialog() == DialogResult.OK)
             {
                 var filterData = f.GetFilterData();
-                Controller.profile.ProfileFilters = filterData;
-                Controller.db.Update(Controller.profile);
-                Controller.db.SaveChanges();
+                Controller.SetFilterData(filterData);
+                Controller.SetLinkedFilters(f.GetLinkedSKUFilters());
+                //Controller.db.Update(Controller.profile);
+                //Controller.db.SaveChanges();
             }
         }
     }

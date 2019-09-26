@@ -311,6 +311,8 @@ namespace PrintQueueManager.Print
             e.HasMorePages = currentPage < document.Pages.Count;
         }
 
+ 
+
         void autoPosition(Graphics graphics, double printerWidth,
            double printerHeight, double pdfWidth, double pdfHeight)
         {
