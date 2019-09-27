@@ -352,7 +352,7 @@ namespace PrintQueueManager
                         //db.SaveChanges();
                     }
 #if DEBUG
-                    if(item.Sku.StartsWith("P") && (profile.IgnoreLinkingTexts.Count > 0))
+                    if(item.Sku.StartsWith("D") && (profile.IgnoreLinkingTexts.Count > 0))
                     {
                         var test = "";
                     }
@@ -576,7 +576,7 @@ namespace PrintQueueManager
             log.Show();
 
 #if DEBUG
-            timCheckFTP.Interval = ((2 * 60) * 1000); 
+            timCheckFTP.Interval = ((1 * 60) * 1000); 
 #else
             timCheckFTP.Interval = ((config.CheckInterval * 60) * 1000);
 #endif

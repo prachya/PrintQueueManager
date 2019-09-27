@@ -288,9 +288,11 @@ namespace PrintQueueManager
             var res = sku;
             foreach (var item in profile.IgnoreLinkingTexts)
             {
-                if (sku.StartsWith(item.IgnoreText))
+                //if (sku.StartsWith(item.IgnoreText))
+                if(sku.Contains(item.IgnoreText))
                 {
-                    res = sku.Substring(item.IgnoreText.Length);
+                    var startIdx = sku.IndexOf(item.IgnoreText);
+                    res = sku.Remove(startIdx,item.IgnoreText.Length);
                     break;
                 }
             }
