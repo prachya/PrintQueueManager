@@ -21,8 +21,8 @@ namespace PrintQueueManager.Data
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 //optionsBuilder.UseSqlCe(@"Data Source=C:\projects2\PrintQueueManager\PrintQueueManager\data.sdf");
                 //optionsBuilder.UseSqlCe(@"Data Source=C:\projects2\data.sdf");
-                optionsBuilder.UseSqlCe(@"Data Source=C:\projects2\PrintQueueManager\data.sdf");
-                //optionsBuilder.UseSqlCe(@"DataSource=C:\projects2\PrintQueueManager\PrintQueueManager\PrintQueueManager\bin\Debug\data.sdf");
+                //optionsBuilder.UseSqlCe(@"Data Source=C:\projects2\PrintQueueManager\data.sdf");
+                optionsBuilder.UseSqlCe(@"DataSource=C:\projects2\PrintQueueManager\PrintQueueManager\PrintQueueManager\bin\Debug\data.sdf");
 
 #else
                 optionsBuilder.UseSqlCe(@"Data Source=data.sdf");

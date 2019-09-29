@@ -29,10 +29,11 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProfileFrame));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnEditFilter = new System.Windows.Forms.Button();
             this.cmbPrintRun = new System.Windows.Forms.ComboBox();
             this.label11 = new System.Windows.Forms.Label();
             this.btnChangePrintStatus = new System.Windows.Forms.Button();
@@ -50,6 +51,8 @@
             this.button3 = new System.Windows.Forms.Button();
             this.lblStatus = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
+            this.btnDown = new System.Windows.Forms.Button();
+            this.btnUp = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.cmbPrinter = new System.Windows.Forms.ComboBox();
             this.cmbPresets = new System.Windows.Forms.ComboBox();
@@ -94,10 +97,9 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.startPrintTimer = new System.Windows.Forms.Timer(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.btnDown = new System.Windows.Forms.Button();
-            this.btnUp = new System.Windows.Forms.Button();
+            this.cmbPageSelector = new System.Windows.Forms.ComboBox();
+            this.label13 = new System.Windows.Forms.Label();
             this.orderBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.btnEditFilter = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel4.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -133,6 +135,16 @@
             this.panel1.Size = new System.Drawing.Size(1298, 114);
             this.panel1.TabIndex = 0;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            // 
+            // btnEditFilter
+            // 
+            this.btnEditFilter.Location = new System.Drawing.Point(663, 12);
+            this.btnEditFilter.Name = "btnEditFilter";
+            this.btnEditFilter.Size = new System.Drawing.Size(23, 23);
+            this.btnEditFilter.TabIndex = 20;
+            this.btnEditFilter.Text = "...";
+            this.btnEditFilter.UseVisualStyleBackColor = true;
+            this.btnEditFilter.Click += new System.EventHandler(this.BtnEditFilter_Click);
             // 
             // cmbPrintRun
             // 
@@ -314,6 +326,28 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // btnDown
+            // 
+            this.btnDown.Image = global::PrintQueueManager.Properties.Resources.if_arrow_full_down_103291_1_;
+            this.btnDown.Location = new System.Drawing.Point(43, 85);
+            this.btnDown.Name = "btnDown";
+            this.btnDown.Size = new System.Drawing.Size(35, 23);
+            this.btnDown.TabIndex = 11;
+            this.toolTip1.SetToolTip(this.btnDown, "Move selected item down.");
+            this.btnDown.UseVisualStyleBackColor = true;
+            this.btnDown.Click += new System.EventHandler(this.btnDown_Click);
+            // 
+            // btnUp
+            // 
+            this.btnUp.Image = ((System.Drawing.Image)(resources.GetObject("btnUp.Image")));
+            this.btnUp.Location = new System.Drawing.Point(6, 85);
+            this.btnUp.Name = "btnUp";
+            this.btnUp.Size = new System.Drawing.Size(33, 23);
+            this.btnUp.TabIndex = 10;
+            this.toolTip1.SetToolTip(this.btnUp, "Move selected item up.");
+            this.btnUp.UseVisualStyleBackColor = true;
+            this.btnUp.Click += new System.EventHandler(this.btnUp_Click);
+            // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(299, 50);
@@ -412,6 +446,8 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.label13);
+            this.panel2.Controls.Add(this.cmbPageSelector);
             this.panel2.Controls.Add(this.button4);
             this.panel2.Controls.Add(this.panel3);
             this.panel2.Controls.Add(this.label4);
@@ -548,14 +584,14 @@
             this.orderGridView.AllowUserToDeleteRows = false;
             this.orderGridView.AllowUserToResizeRows = false;
             this.orderGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.orderGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.orderGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.orderGridView.ColumnHeadersHeight = 40;
             this.orderGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.orderGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -675,8 +711,8 @@
             // 
             this.Linked.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.Linked.DataPropertyName = "Linked";
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Linked.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Linked.DefaultCellStyle = dataGridViewCellStyle2;
             this.Linked.HeaderText = "Linked";
             this.Linked.Name = "Linked";
             this.Linked.ReadOnly = true;
@@ -776,41 +812,27 @@
             this.timer2.Interval = 60000;
             this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
             // 
-            // btnDown
+            // cmbPageSelector
             // 
-            this.btnDown.Image = global::PrintQueueManager.Properties.Resources.if_arrow_full_down_103291_1_;
-            this.btnDown.Location = new System.Drawing.Point(43, 85);
-            this.btnDown.Name = "btnDown";
-            this.btnDown.Size = new System.Drawing.Size(35, 23);
-            this.btnDown.TabIndex = 11;
-            this.toolTip1.SetToolTip(this.btnDown, "Move selected item down.");
-            this.btnDown.UseVisualStyleBackColor = true;
-            this.btnDown.Click += new System.EventHandler(this.btnDown_Click);
+            this.cmbPageSelector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbPageSelector.FormattingEnabled = true;
+            this.cmbPageSelector.Location = new System.Drawing.Point(474, 6);
+            this.cmbPageSelector.Name = "cmbPageSelector";
+            this.cmbPageSelector.Size = new System.Drawing.Size(75, 21);
+            this.cmbPageSelector.TabIndex = 15;
             // 
-            // btnUp
+            // label13
             // 
-            this.btnUp.Image = ((System.Drawing.Image)(resources.GetObject("btnUp.Image")));
-            this.btnUp.Location = new System.Drawing.Point(6, 85);
-            this.btnUp.Name = "btnUp";
-            this.btnUp.Size = new System.Drawing.Size(33, 23);
-            this.btnUp.TabIndex = 10;
-            this.toolTip1.SetToolTip(this.btnUp, "Move selected item up.");
-            this.btnUp.UseVisualStyleBackColor = true;
-            this.btnUp.Click += new System.EventHandler(this.btnUp_Click);
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(432, 10);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(32, 13);
+            this.label13.TabIndex = 16;
+            this.label13.Text = "Page";
             // 
             // orderBindingSource
             // 
             this.orderBindingSource.DataSource = typeof(PrintQueueManager.Data.Order);
-            // 
-            // btnEditFilter
-            // 
-            this.btnEditFilter.Location = new System.Drawing.Point(663, 12);
-            this.btnEditFilter.Name = "btnEditFilter";
-            this.btnEditFilter.Size = new System.Drawing.Size(23, 23);
-            this.btnEditFilter.TabIndex = 20;
-            this.btnEditFilter.Text = "...";
-            this.btnEditFilter.UseVisualStyleBackColor = true;
-            this.btnEditFilter.Click += new System.EventHandler(this.BtnEditFilter_Click);
             // 
             // ProfileFrame
             // 
@@ -905,5 +927,7 @@
         private System.Windows.Forms.Label label12;
         public System.Windows.Forms.Button btnDeleteProfile;
         private System.Windows.Forms.Button btnEditFilter;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.ComboBox cmbPageSelector;
     }
 }

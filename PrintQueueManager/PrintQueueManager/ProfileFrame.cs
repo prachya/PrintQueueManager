@@ -55,6 +55,8 @@ namespace PrintQueueManager
             }
         }
 
+
+
         private void LoadFormData(PrintProfile profile)
         {
             cmbFilterTypes.SelectedIndex = (int)profile.FilterType;
@@ -174,7 +176,7 @@ namespace PrintQueueManager
             orderGridView.Refresh();
 
 
-            
+
 
 
 
@@ -190,7 +192,7 @@ namespace PrintQueueManager
 
             //}
 
-
+            PopulatePageSelector();
         }
 
         private void cmbFilterTypes_SelectedIndexChanged(object sender, EventArgs e)
@@ -646,6 +648,16 @@ namespace PrintQueueManager
             //    ;
             //}
 
+        }
+
+        private void PopulatePageSelector()
+        {
+            var lastPage = Controller.GetNoOfPages(); // Math.Round(c, 0);
+            cmbPageSelector.Items.Clear();
+            for(var i=1;i <= lastPage;i++)
+            {
+                cmbPageSelector.Items.Add(i);
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)

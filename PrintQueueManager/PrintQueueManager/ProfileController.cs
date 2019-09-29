@@ -107,6 +107,7 @@ namespace PrintQueueManager
             //CreateCurrentList();
             //frame.LoadProfileOrders(CurrentList);
             LoadProfileOrders();
+
         }
 
         public List<PrintItemDataRow> Search(string keyword)
@@ -250,7 +251,7 @@ namespace PrintQueueManager
             db.SaveChanges();
             
 
-            //LoadProfileOrders();
+            LoadProfileOrders();
 
         }
 
@@ -283,6 +284,19 @@ namespace PrintQueueManager
             frame.LoadProfileOrders(CurrentList);
         }
 
+        public int GetNoOfPages()
+        {
+            var c = profile.ProfileOrders.Count / 100;
+            if (c == 0)
+                c = 1;
+            else
+            {
+                if ((profile.ProfileOrders.Count % 100) != 0)
+                    c++;
+            }
+            return c;
+        }
+
         public static string RemoveIgnoreText(PrintProfile profile,string sku)
         {
             var res = sku;
@@ -292,8 +306,7 @@ namespace PrintQueueManager
                 if(sku.Contains(item.IgnoreText))
                 {
                     var startIdx = sku.IndexOf(item.IgnoreText);
-                    res = sku.Remove(startIdx,item.IgnoreText.Length);
-                    break;
+                    res = res.Remove(startIdx,item.IgnoreText.Length);                   
                 }
             }
             return res;
