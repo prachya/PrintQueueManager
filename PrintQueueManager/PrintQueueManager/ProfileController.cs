@@ -303,7 +303,7 @@ namespace PrintQueueManager
             foreach (var item in profile.IgnoreLinkingTexts)
             {
                 //if (sku.StartsWith(item.IgnoreText))
-                if(sku.Contains(item.IgnoreText))
+                if(res.Contains(item.IgnoreText))
                 {
                     var startIdx = sku.IndexOf(item.IgnoreText);
                     res = res.Remove(startIdx,item.IgnoreText.Length);                   
@@ -563,19 +563,20 @@ namespace PrintQueueManager
                     }
                     else
                     {
-                        if( (printItem.SKU.StartsWith("AMZ_")) ||
-                            (printItem.SKU.StartsWith("EBY_")) ||
-                            (printItem.SKU.StartsWith("SHP_")) ||
-                            (printItem.SKU.StartsWith("ETS_")) ||
-                            (printItem.SKU.StartsWith("EB2_")) ||
-                            (printItem.SKU.StartsWith("AM2_")) ||
-                            (printItem.SKU.StartsWith("SH2_")) ||
-                            (printItem.SKU.StartsWith("ET2_"))  )
-                        {
-                            filePath = mainForm.config.PDFFolder + printItem.SKU.Remove(0,4) + ".pdf";
-                        }
-                        else
-                            filePath = mainForm.config.PDFFolder + printItem.SKU + ".pdf";
+                        //if( (printItem.SKU.StartsWith("AMZ_")) ||
+                        //    (printItem.SKU.StartsWith("EBY_")) ||
+                        //    (printItem.SKU.StartsWith("SHP_")) ||
+                        //    (printItem.SKU.StartsWith("ETS_")) ||
+                        //    (printItem.SKU.StartsWith("EB2_")) ||
+                        //    (printItem.SKU.StartsWith("AM2_")) ||
+                        //    (printItem.SKU.StartsWith("SH2_")) ||
+                        //    (printItem.SKU.StartsWith("ET2_"))  )
+                        //{
+                        //    filePath = mainForm.config.PDFFolder + printItem.SKU.Remove(0,4) + ".pdf";
+                        //}
+                        //else
+
+                        filePath = mainForm.config.PDFFolder + ProfileController.RemoveIgnoreText(profile, printItem.SKU) + ".pdf";
                     }
 
                     
