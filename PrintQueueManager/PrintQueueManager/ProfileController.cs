@@ -30,9 +30,15 @@ namespace PrintQueueManager
             this.db = db;
             this.profile = profile;
             printController.OnPrintingStatusChanged += PrintController_OnPrintingStatusChanged;
+            printController.OnPrinterStatusInfo += PrintController_OnPrinterStatusInfo;
             //printController.PrinterName = "Canon Inkjet 0278 Class Driver";
 
             MakePrintingsToPendings();
+        }
+
+        private void PrintController_OnPrinterStatusInfo(object sender, string info)
+        {
+            mainForm.log.AddMessage(info);
         }
 
         public void SetFilterData(List<Filter> filterData)
@@ -163,6 +169,53 @@ namespace PrintQueueManager
 
         }
 
+        private void CreateCurrentList(int pageNumber)
+        {
+            var noOfPages = GetNoOfPages();
+            if (pageNumber > noOfPages)
+                return;
+            var pageSize = RecordsPerPage;
+            int startPos = startPos = (pageNumber-1) * pageSize;
+            var noOfRecs = pageSize;
+            if(pageNumber == noOfPages)
+            {
+                if((profile.ProfileOrders.Count % pageSize) != 0)
+                {
+                    noOfRecs = (profile.ProfileOrders.Count % pageSize);
+                }
+            }
+            else
+            {
+                
+            }
+            
+            //CurrentList = db.ProfileOrders.Where(d => d.ProfileId == profile.Id)
+            //                              .Skip(startPos).Take(noOfRecs).Select(d => new PrintItemDataRow
+            CurrentList = profile.ProfileOrders.Where(d => d.ProfileId == profile.Id).Select(d => new PrintItemDataRow
+                                          {
+                Quantity = d.Order.Quantity,
+                SKU = d.Order.Sku,
+                Linked = d.Order.IsLinked ? "Yes" : "--",
+                PrintingStatus = d.Order.OrderStatus == OrderStatus.Pending ? "Pending" : d.PrintingStatus.ToString(),
+                TimeOfOrder = d.Order.ReceivedDate,
+                CustomerName = d.Order.CustomerName,
+                OrderNotes = d.Order.OrderNotes,
+                CustomerEmail = d.Order.CustomerEmail,
+                PrintingOrder = d.PrintingOrder,
+                LinkedFileName = d.Order.LinkedFilename,
+                ShortTitle = d.Order.ShortTitle,
+                Remark = d.Order.Remark,
+                Id = d.OrderId,
+                PrintRun = d.Order.PrintRun,
+                ProfileOrder = d
+
+            }).OrderByDescending(d => d.PrintingOrder)
+              .ThenByDescending(d => d.TimeOfOrder)
+              .Skip(startPos).Take(noOfRecs)
+              .ToList();
+
+        }
+
         public void OrderUP(ProfileOrder profileOrder)
         {
             if (profileOrder.PrintingOrder == 0)
@@ -226,6 +279,8 @@ namespace PrintQueueManager
                 db.Update(profileOrder);
             }
             db.SaveChanges();
+
+            LoadProfileOrders();
         }
 
         public void ChangeToPending(IEnumerable<ProfileOrder> profileOrders)
@@ -277,21 +332,32 @@ namespace PrintQueueManager
 
         }
 
-        public void LoadProfileOrders()
+#if DEBUG
+        public int RecordsPerPage = 50;
+#else
+        public int RecordsPerPage = 100;
+#endif
+
+        public int CurrPage = 1;
+        public void LoadProfileOrders(int page = -1)
         {
             // recreate current list.
-            CreateCurrentList();
+            if (page >= 0)
+                CurrPage = page;
+            else
+                CurrPage = 1;
+            CreateCurrentList(CurrPage);
             frame.LoadProfileOrders(CurrentList);
         }
 
         public int GetNoOfPages()
         {
-            var c = profile.ProfileOrders.Count / 100;
+            var c = profile.ProfileOrders.Count / RecordsPerPage;
             if (c == 0)
                 c = 1;
             else
             {
-                if ((profile.ProfileOrders.Count % 100) != 0)
+                if ((profile.ProfileOrders.Count % RecordsPerPage) != 0)
                     c++;
             }
             return c;
@@ -542,13 +608,15 @@ namespace PrintQueueManager
             if (this.profile.PrintRun == "Run All")
             {
                 printItem = CurrentList.Where(d => d.ProfileOrder.Order.IsLinked &&
-                                                   d.ProfileOrder.PrintingStatus == Data.PrintingStatus.Pending).OrderBy(d => d.TimeOfOrder).FirstOrDefault(); //.LastOrDefault();
+                                                   d.ProfileOrder.PrintingStatus == Data.PrintingStatus.Pending)
+                                       .OrderBy(d => d.TimeOfOrder).FirstOrDefault(); //.LastOrDefault();
             }
             else
             {
                 printItem = CurrentList.Where(d => d.ProfileOrder.Order.IsLinked &&
                                                    d.ProfileOrder.PrintingStatus == Data.PrintingStatus.Pending &&
-                                                   d.ProfileOrder.Order.PrintRun == this.profile.PrintRun).OrderBy(d => d.TimeOfOrder).FirstOrDefault(); //.LastOrDefault();
+                                                   d.ProfileOrder.Order.PrintRun == this.profile.PrintRun)
+                                       .OrderBy(d => d.TimeOfOrder).FirstOrDefault(); //.LastOrDefault();
             }
 
             if (printItem != null)
@@ -563,23 +631,8 @@ namespace PrintQueueManager
                     }
                     else
                     {
-                        //if( (printItem.SKU.StartsWith("AMZ_")) ||
-                        //    (printItem.SKU.StartsWith("EBY_")) ||
-                        //    (printItem.SKU.StartsWith("SHP_")) ||
-                        //    (printItem.SKU.StartsWith("ETS_")) ||
-                        //    (printItem.SKU.StartsWith("EB2_")) ||
-                        //    (printItem.SKU.StartsWith("AM2_")) ||
-                        //    (printItem.SKU.StartsWith("SH2_")) ||
-                        //    (printItem.SKU.StartsWith("ET2_"))  )
-                        //{
-                        //    filePath = mainForm.config.PDFFolder + printItem.SKU.Remove(0,4) + ".pdf";
-                        //}
-                        //else
-
                         filePath = mainForm.config.PDFFolder + ProfileController.RemoveIgnoreText(profile, printItem.SKU) + ".pdf";
                     }
-
-                    
 
                     if (!printItem.ProfileOrder.Order.IsLinked)
                     {
@@ -588,7 +641,11 @@ namespace PrintQueueManager
                     }
 
                     printItem.ProfileOrder.StaredPrintingTime = DateTime.Now;
+
+                    // fires the file is being printed.
+                    //
                     OnPrintItemStatusChanged?.Invoke(this, printItem.ProfileOrder, Data.PrintingStatus.Printing);
+                    
                     // if (!await printController.Send2(filePath))
                     System.Drawing.Printing.PrinterSettings settings = null;
                     if (profile.PresetId != null)

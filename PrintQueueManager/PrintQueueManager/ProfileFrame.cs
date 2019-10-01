@@ -142,6 +142,8 @@ namespace PrintQueueManager
         public ProfileFrame()
         {
             InitializeComponent();
+            this.DoubleBuffered = true;
+            
             orderGridView.DoubleBuffered(true);
         }
 
@@ -175,11 +177,6 @@ namespace PrintQueueManager
             orderGridView.DataSource = lst;
             orderGridView.Refresh();
 
-
-
-
-
-
             //var i = 0;
             //foreach (DataGridViewRow item in orderGridView.Rows)
             //{
@@ -193,6 +190,7 @@ namespace PrintQueueManager
             //}
 
             PopulatePageSelector();
+
         }
 
         private void cmbFilterTypes_SelectedIndexChanged(object sender, EventArgs e)
@@ -650,13 +648,19 @@ namespace PrintQueueManager
 
         }
 
-        private void PopulatePageSelector()
+        public void PopulatePageSelector()
         {
             var lastPage = Controller.GetNoOfPages(); // Math.Round(c, 0);
             cmbPageSelector.Items.Clear();
             for(var i=1;i <= lastPage;i++)
             {
                 cmbPageSelector.Items.Add(i);
+            }
+            if(cmbPageSelector.Items.Count > 0)
+            {
+                var idx = cmbPageSelector.Items.IndexOf(Controller.CurrPage);
+                if (idx >= 0)
+                    cmbPageSelector.SelectedIndex = idx;
             }
         }
 
@@ -1199,7 +1203,7 @@ namespace PrintQueueManager
 
                 //Controller.LoadProfileOrders();
 
-                orderGridView.Refresh();
+                //orderGridView.Refresh();
 
             }
         }
@@ -1269,6 +1273,16 @@ namespace PrintQueueManager
                 Controller.SetLinkedFilters(f.GetLinkedSKUFilters());
                 //Controller.db.Update(Controller.profile);
                 //Controller.db.SaveChanges();
+            }
+        }
+
+        private void CmbPageSelector_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (Controller.CurrPage != Convert.ToInt32(cmbPageSelector.Text))
+            {
+                //Controller.CurrPage = Convert.ToInt32(cmbPageSelector.Text);
+                var page = Convert.ToInt32(cmbPageSelector.Text);
+                Controller.LoadProfileOrders(page);
             }
         }
     }

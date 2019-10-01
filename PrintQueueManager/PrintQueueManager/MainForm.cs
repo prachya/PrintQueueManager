@@ -59,24 +59,26 @@ namespace PrintQueueManager
             fTPLocationSettingToolStripMenuItem.Enabled = !IsStarted();
             refreshRepoFolderToolStripMenuItem.Enabled = fTPLocationSettingToolStripMenuItem.Enabled;
 
+            if (tabControl1.SelectedTab.Controls.Count > 0)
+            {
+                (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnDown.Enabled =
+                (tabControl1.SelectedTab.Controls[0] as ProfileFrame).lblStatus.Text != "Started";
+                (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnUp.Enabled = (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnDown.Enabled;
+                (tabControl1.SelectedTab.Controls[0] as ProfileFrame).maskedTextBox1.Enabled = (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnDown.Enabled;
+                (tabControl1.SelectedTab.Controls[0] as ProfileFrame).maskedTextBox2.Enabled = (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnDown.Enabled;
+                (tabControl1.SelectedTab.Controls[0] as ProfileFrame).checkBox1.Enabled = (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnDown.Enabled;
+                (tabControl1.SelectedTab.Controls[0] as ProfileFrame).cmbPrinter.Enabled = (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnDown.Enabled;
+                (tabControl1.SelectedTab.Controls[0] as ProfileFrame).cmbPresets.Enabled = (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnDown.Enabled;
+                //(tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnMove.Enabled = (tabControl1.SelectedTab.Controls[0] as ProfileFrame).CanMove;
+                (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnChangePrintStatus.Enabled =
+                            (tabControl1.SelectedTab.Controls[0] as ProfileFrame).CanChangeStatus; // btnDown.Enabled;
+                (tabControl1.SelectedTab.Controls[0] as ProfileFrame).button2.Enabled = (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnDown.Enabled;
+                (tabControl1.SelectedTab.Controls[0] as ProfileFrame).button3.Enabled = !(((tabControl1.SelectedTab.Controls[0] as ProfileFrame).button2.Enabled)
+                                                                                         || ((tabControl1.SelectedTab.Controls[0] as ProfileFrame).Controller.Stopping));
 
-            (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnDown.Enabled =
-            (tabControl1.SelectedTab.Controls[0] as ProfileFrame).lblStatus.Text != "Started";
-            (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnUp.Enabled = (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnDown.Enabled;
-            (tabControl1.SelectedTab.Controls[0] as ProfileFrame).maskedTextBox1.Enabled = (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnDown.Enabled;
-            (tabControl1.SelectedTab.Controls[0] as ProfileFrame).maskedTextBox2.Enabled = (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnDown.Enabled;
-            (tabControl1.SelectedTab.Controls[0] as ProfileFrame).checkBox1.Enabled = (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnDown.Enabled;
-            (tabControl1.SelectedTab.Controls[0] as ProfileFrame).cmbPrinter.Enabled = (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnDown.Enabled;
-            (tabControl1.SelectedTab.Controls[0] as ProfileFrame).cmbPresets.Enabled = (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnDown.Enabled;
-            //(tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnMove.Enabled = (tabControl1.SelectedTab.Controls[0] as ProfileFrame).CanMove;
-            (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnChangePrintStatus.Enabled =
-                        (tabControl1.SelectedTab.Controls[0] as ProfileFrame).CanChangeStatus; // btnDown.Enabled;
-            (tabControl1.SelectedTab.Controls[0] as ProfileFrame).button2.Enabled = (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnDown.Enabled;
-            (tabControl1.SelectedTab.Controls[0] as ProfileFrame).button3.Enabled = !(  ((tabControl1.SelectedTab.Controls[0] as ProfileFrame).button2.Enabled)
-                                                                                     || ((tabControl1.SelectedTab.Controls[0] as ProfileFrame).Controller.Stopping) );
-
-            (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnKill.Enabled = !(((tabControl1.SelectedTab.Controls[0] as ProfileFrame).button2.Enabled)
-                                                                                     || ((tabControl1.SelectedTab.Controls[0] as ProfileFrame).Controller.Stopping));
+                (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnKill.Enabled = !(((tabControl1.SelectedTab.Controls[0] as ProfileFrame).button2.Enabled)
+                                                                                         || ((tabControl1.SelectedTab.Controls[0] as ProfileFrame).Controller.Stopping));
+            }
             
 
         }
@@ -145,7 +147,7 @@ namespace PrintQueueManager
             if (!File.Exists("config.json"))
             {
                 config = new ConfigData();
-                config.CheckInterval = 20; // (20*60)*1000;
+                config.CheckInterval = (20*60)*1000;
                 //config.PrinterSpeedData = "";
                 SaveConfig();
             }
@@ -210,6 +212,13 @@ namespace PrintQueueManager
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            //foreach(var item in tabControl1.TabPages.OfType<TabPage>())
+            //{
+            //    //item.Visible = false;
+            //    (item.Controls[0] as ProfileFrame).Visible = false;
+            //}
+            //var tab =tabControl1.SelectedTab; //.TabPages[tabControl1.SelectedIndex];
+            //tab.Controls[0].Visible = true;
 
         }
 
@@ -230,7 +239,10 @@ namespace PrintQueueManager
 
             ExtractImportedData(importedList);
             foreach (var item in ProfileControllers)
+            {
                 item.frame.PopulatePrintRun();
+                item.frame.PopulatePageSelector();
+            }
         }
         
         private void ExtractImportedData(List<Order> importedList)
@@ -1012,8 +1024,8 @@ namespace PrintQueueManager
 
             // First paint the background with a color based on the current tab
 
-            // e.Index is the index of the tab in the TabPages collection.
-            if( (tabControl1.TabPages[e.Index].Controls[0] as ProfileFrame).lblStatus.Text == "Started")
+            //// e.Index is the index of the tab in the TabPages collection.
+            if ((tabControl1.TabPages[e.Index].Controls[0] as ProfileFrame).lblStatus.Text == "Started")
             {
                 // Then draw the current tab button text 
                 e.Graphics.FillRectangle(new SolidBrush(Color.Green), e.Bounds);
@@ -1028,7 +1040,7 @@ namespace PrintQueueManager
                 paddedBounds.Inflate(-2, -2);
                 e.Graphics.DrawString(tabControl1.TabPages[e.Index].Text, this.Font, SystemBrushes.ActiveCaptionText, paddedBounds);
             }
-            
+
 
             //switch (e.Index)
             //{
@@ -1049,6 +1061,11 @@ namespace PrintQueueManager
         {
             var x = "AMZ_00001.PDF";
             MessageBox.Show(x.Remove(0, 4));
+        }
+
+        private void TabControl1_TabIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 

@@ -22,13 +22,12 @@ namespace PrintQueueManager.Print
     public enum PrintingStatus { Printing, Idle, Initialized, Aborted}
     public enum PrintingStatusDetail { Offline, PaperOut, Paused , Unknown}
     public delegate void PrintingStatusChangeHandler(object sender, PrintingStatus status);
-
+    public delegate void PrinterStatusInfoHandler(object sender, string info);
 
     public class PrintController
     {
         public event PrintingStatusChangeHandler OnPrintingStatusChanged;
-
-
+        public event PrinterStatusInfoHandler OnPrinterStatusInfo;
         public string PrinterName { get; set; }
 
         private PrintingStatus status { get; set; } = PrintingStatus.Idle;
@@ -39,6 +38,11 @@ namespace PrintQueueManager.Print
             //    terminated = false;
             this.status = status;
             OnPrintingStatusChanged?.Invoke(this, this.status);
+        }
+
+        private void FirePrinterStatusInfo(string info)
+        {
+            OnPrinterStatusInfo?.Invoke(this, info);
         }
 
         bool terminated;
@@ -73,8 +77,7 @@ namespace PrintQueueManager.Print
                 if (IsNetworkedPrinter(PrinterName,out part1,out part2))
                 {
                     var ps = new PrintServer(part1);
-                    q = ps.GetPrintQueue(part2);
-                    
+                    q = ps.GetPrintQueue(part2);                    
                 }
                 else
                 {
@@ -82,10 +85,7 @@ namespace PrintQueueManager.Print
                     q = printerServer.GetPrintQueue(PrinterName);
                 }
 
-                
-
                 //var printerServer = new PrintServer(@"\\acer-dev"); // PrinterName);
-
                 //q = printerServer.GetPrintQueue(PrinterName);
 
                 //var t = q.DefaultPrintTicket;
@@ -94,9 +94,6 @@ namespace PrintQueueManager.Print
                 //var stream = new FileStream(@"c:\temp\f.xml", FileMode.CreateNew);
                 //t.SaveTo(stream);
                 //stream.Close();
-
-                
-
 
                 // var q = printerServer.GetPrintQueue("Canon iP2700 series"); // PrinterName); // new[] { EnumeratedPrintQueueTypes.Local }); //  PrinterName); // Microsoft XPS Document Writer");
                 //var q = printerServer.GetPrintQueues(); // .GetPrintQueue(PrinterName); // new[] { EnumeratedPrintQueueTypes.Local }); //  PrinterName); // Microsoft XPS Document Writer");
@@ -118,16 +115,10 @@ namespace PrintQueueManager.Print
                 //}
 
                 while (true)
-                {
-                   
+                {                   
                     q.Refresh();
-                    //if(q.NumberOfJobs == 0)
-                    //{
-                    //    break;
-                    //
                     var qs = q.QueueStatus;
-                    var jobs = q.GetPrintJobInfoCollection();
-                    
+                    var jobs = q.GetPrintJobInfoCollection();                    
                     if (terminated)
                     {
                         foreach (var pj in jobs)
@@ -136,8 +127,10 @@ namespace PrintQueueManager.Print
                         break;
                     }
 
-                    if (qs == PrintQueueStatus.Paused)
-                    {                               
+                    if (qs == PrintQueueStatus.Paused)  // print queue of the printer is paused.
+                    {
+                        FirePrinterStatusInfo("Print queue paused " + q.Description);
+
                         if (jobs.Count() == 0)   // even Printer paused, current print job still printing so need to check if the job being printed.
                                                  // if finished.
                         {
@@ -157,28 +150,31 @@ namespace PrintQueueManager.Print
                     }
                     else
                     {
-
-
                         //Debug.Print(q.QueueStatus.ToString());
-
                         //if (q.IsPrinting)
                         //{
                         //    Debug.Print("Printing");
                         //}
-
                         //var jobs = q.GetPrintJobInfoCollection();
                         if (jobs.Count() > 0)
                         {
-
+                            FirePrinterStatusInfo("Job count on queue " + q.Description + " " + jobs.Count().ToString());
                             var job = jobs.FirstOrDefault();
                             if (job.JobStatus == PrintJobStatus.Offline)
+                            {
+                                FirePrinterStatusInfo("Job status Offline " + q.Description + " " + job.JobName);
                                 printingStatusDetail = PrintingStatusDetail.Offline;
+                            }
                             if (job.JobStatus == PrintJobStatus.PaperOut)
+                            {
+                                FirePrinterStatusInfo("Job status Paperout " + q.Description + " " + job.JobName);
                                 printingStatusDetail = PrintingStatusDetail.PaperOut;
+                            }
                             if (job.JobStatus == PrintJobStatus.Paused)
+                            {
+                                FirePrinterStatusInfo("Job status Paused " + q.Description + " " + job.JobName);
                                 printingStatusDetail = PrintingStatusDetail.Paused;
-
-
+                            }
 
                             //foreach (var job in jobs)
                             //{
@@ -310,8 +306,6 @@ namespace PrintQueueManager.Print
             page.Draw(e.Graphics);        
             e.HasMorePages = currentPage < document.Pages.Count;
         }
-
- 
 
         void autoPosition(Graphics graphics, double printerWidth,
            double printerHeight, double pdfWidth, double pdfHeight)

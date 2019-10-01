@@ -63,6 +63,8 @@
             this.txtProfileName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.label13 = new System.Windows.Forms.Label();
+            this.cmbPageSelector = new System.Windows.Forms.ComboBox();
             this.button4 = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
             this.label7 = new System.Windows.Forms.Label();
@@ -97,8 +99,6 @@
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.startPrintTimer = new System.Windows.Forms.Timer(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.cmbPageSelector = new System.Windows.Forms.ComboBox();
-            this.label13 = new System.Windows.Forms.Label();
             this.orderBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.panel1.SuspendLayout();
             this.panel4.SuspendLayout();
@@ -458,6 +458,25 @@
             this.panel2.Size = new System.Drawing.Size(1298, 82);
             this.panel2.TabIndex = 2;
             // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(432, 10);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(32, 13);
+            this.label13.TabIndex = 16;
+            this.label13.Text = "Page";
+            // 
+            // cmbPageSelector
+            // 
+            this.cmbPageSelector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbPageSelector.FormattingEnabled = true;
+            this.cmbPageSelector.Location = new System.Drawing.Point(474, 6);
+            this.cmbPageSelector.Name = "cmbPageSelector";
+            this.cmbPageSelector.Size = new System.Drawing.Size(75, 21);
+            this.cmbPageSelector.TabIndex = 15;
+            this.cmbPageSelector.SelectedIndexChanged += new System.EventHandler(this.CmbPageSelector_SelectedIndexChanged);
+            // 
             // button4
             // 
             this.button4.Location = new System.Drawing.Point(368, 4);
@@ -614,9 +633,11 @@
             this.Remark});
             this.orderGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.orderGridView.EnableHeadersVisualStyles = false;
+            this.orderGridView.GridColor = System.Drawing.SystemColors.Control;
             this.orderGridView.Location = new System.Drawing.Point(0, 114);
             this.orderGridView.Name = "orderGridView";
             this.orderGridView.ReadOnly = true;
+            this.orderGridView.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             this.orderGridView.Size = new System.Drawing.Size(1298, 265);
             this.orderGridView.TabIndex = 3;
             this.orderGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.orderGridView_CellContentClick);
@@ -811,24 +832,6 @@
             // 
             this.timer2.Interval = 60000;
             this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
-            // 
-            // cmbPageSelector
-            // 
-            this.cmbPageSelector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbPageSelector.FormattingEnabled = true;
-            this.cmbPageSelector.Location = new System.Drawing.Point(474, 6);
-            this.cmbPageSelector.Name = "cmbPageSelector";
-            this.cmbPageSelector.Size = new System.Drawing.Size(75, 21);
-            this.cmbPageSelector.TabIndex = 15;
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(432, 10);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(32, 13);
-            this.label13.TabIndex = 16;
-            this.label13.Text = "Page";
             // 
             // orderBindingSource
             // 
