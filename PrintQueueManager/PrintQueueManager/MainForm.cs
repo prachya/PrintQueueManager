@@ -83,7 +83,6 @@ namespace PrintQueueManager
 
         }
 
-
         private void LoadProfileTabs()
         {
             var profiles = db.PrintProfiles.Include(d=>d.ProfileFilters)
@@ -140,7 +139,6 @@ namespace PrintQueueManager
                 
             }
         }
-
 
         private void LoadConfigData()
         {
@@ -588,7 +586,7 @@ namespace PrintQueueManager
             log.Show();
 
 #if DEBUG
-            timCheckFTP.Interval = ((1 * 60) * 1000); 
+            timCheckFTP.Interval = ((20 * 60) * 1000); 
 #else
             timCheckFTP.Interval = ((config.CheckInterval * 60) * 1000);
 #endif

@@ -156,6 +156,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\TallComponents PDFRasterizer.NET 3.0.147.0\net40\TallComponents.PDF.Rasterizer.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddProfile.cs">

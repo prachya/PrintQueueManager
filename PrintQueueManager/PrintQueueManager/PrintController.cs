@@ -9,6 +9,7 @@ using System.IO;
 using System.Printing;
 using System.Threading;
 using System.Diagnostics;
+using System.Windows.Threading;
 //using PdfSharp.Pdf.Printing;
 using System.Runtime.InteropServices;
 //using EvoPdf.PdfPrint;
@@ -23,15 +24,168 @@ namespace PrintQueueManager.Print
     public enum PrintingStatusDetail { Offline, PaperOut, Paused , Unknown}
     public delegate void PrintingStatusChangeHandler(object sender, PrintingStatus status);
     public delegate void PrinterStatusInfoHandler(object sender, string info);
+    public delegate void PrinterPrintProgressHandler(object sender, string info);
 
     public class PrintController
     {
         public event PrintingStatusChangeHandler OnPrintingStatusChanged;
         public event PrinterStatusInfoHandler OnPrinterStatusInfo;
+        public event PrinterPrintProgressHandler OnPrinterPrintProgress;
         public string PrinterName { get; set; }
-
+        private Timer JobMonitorTimer;
         private PrintingStatus status { get; set; } = PrintingStatus.Idle;
         private PrintingStatusDetail printingStatusDetail { get; set; } = PrintingStatusDetail.Unknown;
+        public PrintController()
+        {
+                     
+        }
+
+        void StartJobMonitor2()
+        {
+            //JobMonitorTimer = new Timer()
+            JobMonitorTimer = new Timer(
+                        new TimerCallback(TickTimer),
+                        null,
+                        2000,
+                        1000);
+        }
+
+        void TickTimer(object state)
+        {
+            //Console.Write("Tick! ");
+            //Console.WriteLine(
+            //    Thread.CurrentThread.
+            //    ManagedThreadId.ToString());
+            //Thread.Sleep(4000);
+
+            string part2 = "";
+            string part1 = "";
+            PrintQueue q = null;
+            if (IsNetworkedPrinter(PrinterName, out part1, out part2))
+            {
+                var ps = new PrintServer(part1);
+                q = ps.GetPrintQueue(part2);
+            }
+            else
+            {
+                var printerServer = new LocalPrintServer(); // new PrintServer(PrinterName);
+                q = printerServer.GetPrintQueue(PrinterName);
+            }
+
+            q.Refresh();
+            var qs = q.QueueStatus;
+            var jobs = q.GetPrintJobInfoCollection();
+
+            if (qs == PrintQueueStatus.Paused)  // print queue of the printer is paused.
+            {
+                FirePrinterStatusInfo("Print queue paused " + q.Description);
+
+                if (jobs.Count() == 0)      // even Printer paused, current print job still printing so need to check if the job being printed.
+                                            // if finished.
+                {
+                    if (status != PrintingStatus.Initialized)
+                    {
+                        ChangeStatus(PrintingStatus.Idle);
+                    }
+                    else
+                    {
+                        printingStatusDetail = PrintingStatusDetail.Paused;
+                        ChangeStatus(PrintingStatus.Printing);
+                    }
+                }
+                else
+                {
+                    printingStatusDetail = PrintingStatusDetail.Paused;
+                    ChangeStatus(PrintingStatus.Printing);
+                }
+            }
+            else
+            {
+                //Debug.Print(q.QueueStatus.ToString());
+                //if (q.IsPrinting)
+                //{
+                //    Debug.Print("Printing");
+                //}
+                //var jobs = q.GetPrintJobInfoCollection();
+                if (jobs.Count() > 0)
+                {
+                    //FirePrinterStatusInfo("Job count on queue " + q.Description + " " + jobs.Count().ToString());
+                    var job = jobs.FirstOrDefault();
+                    if (job.JobStatus == PrintJobStatus.Offline)
+                    {
+                        FirePrinterStatusInfo("Job status Offline " + q.Description + " " + job.JobName);
+                        printingStatusDetail = PrintingStatusDetail.Offline;
+                    }
+                    else if (job.JobStatus == PrintJobStatus.PaperOut)
+                    {
+                        FirePrinterStatusInfo("Job status Paperout " + q.Description + " " + job.JobName);
+                        printingStatusDetail = PrintingStatusDetail.PaperOut;
+                    }
+                    else if (job.JobStatus == PrintJobStatus.Paused)
+                    {
+                        FirePrinterStatusInfo("Job status Paused " + q.Description + " " + job.JobName);
+                        printingStatusDetail = PrintingStatusDetail.Paused;
+                    }
+                    else if (job.JobStatus == PrintJobStatus.Printing)
+                    {
+                        FirePrinterStatusInfo("Printer's job status [printing] " + q.Description + " " + job.JobName);
+                        //printingStatusDetail = PrintingStatusDetail.Paused;
+                    }
+                    else if (job.JobStatus == PrintJobStatus.Completed)
+                        FirePrinterStatusInfo(job.JobName + " Completed, " + job.JobStatus.ToString() + " " + q.Description + " ");
+                    else
+                    {
+                        job.Refresh();
+                        FirePrinterStatusInfo("Job status " + job.JobStatus.ToString()
+                                                    + " " + q.Description
+                                                    + " " + job.Name);         
+#if DEBUG
+                        Debug.Print(job.JobStatus.ToString());
+#endif
+                    }
+
+                    FirePrinterPrintProgress("Page: " + job.NumberOfPages.ToString()
+                                                      + "    " + job.JobStatus.ToString()
+                                                      + " job: " + job.Name + " on " + q.Name);
+                    //job.NumberOfPagesPrinted
+                    //foreach (var job in jobs)
+                    //{
+                    //    Debug.Print(job.JobStatus.ToString());
+                    //}
+
+                    ChangeStatus(PrintingStatus.Printing);
+                }
+                else
+                {
+                    if (status != PrintingStatus.Initialized)
+                        ChangeStatus(PrintingStatus.Idle);
+                }
+            }
+
+            bool IsNetworkedPrinter(string name, out string part11, out string part22)
+            {
+                bool result = false;
+                part22 = "";
+                part11 = "";
+                string root = Path.GetPathRoot(name);
+
+                // Check if root starts with "\\", clearly an UNC
+                if (root.StartsWith(@"\\"))
+                    result = true;
+
+                if (result)
+                {
+                    var c = name.IndexOf(@"\", 2);
+                    part22 = new string(name.Skip(c + 1).ToArray());
+                    part11 = new string(name.Take(c).ToArray());
+                }
+
+                return result;
+            }
+
+        }
+
+
         private void ChangeStatus(PrintingStatus status)
         {
             //if (status == PrintingStatus.Idle)
@@ -43,6 +197,11 @@ namespace PrintQueueManager.Print
         private void FirePrinterStatusInfo(string info)
         {
             OnPrinterStatusInfo?.Invoke(this, info);
+        }
+
+        private void FirePrinterPrintProgress(string progresstext)
+        {
+            OnPrinterPrintProgress?.Invoke(this, progresstext);
         }
 
         bool terminated;
@@ -117,7 +276,7 @@ namespace PrintQueueManager.Print
                 while (true)
                 {                   
                     q.Refresh();
-                    var qs = q.QueueStatus;
+                    var qs = q.QueueStatus;                   
                     var jobs = q.GetPrintJobInfoCollection();                    
                     if (terminated)
                     {
@@ -135,7 +294,9 @@ namespace PrintQueueManager.Print
                                                  // if finished.
                         {
                             if (status != PrintingStatus.Initialized)
+                            {
                                 ChangeStatus(PrintingStatus.Idle);
+                            }
                             else
                             {
                                 printingStatusDetail = PrintingStatusDetail.Paused;
@@ -158,24 +319,43 @@ namespace PrintQueueManager.Print
                         //var jobs = q.GetPrintJobInfoCollection();
                         if (jobs.Count() > 0)
                         {
-                            FirePrinterStatusInfo("Job count on queue " + q.Description + " " + jobs.Count().ToString());
+                            //FirePrinterStatusInfo("Job count on queue " + q.Description + " " + jobs.Count().ToString());
                             var job = jobs.FirstOrDefault();
                             if (job.JobStatus == PrintJobStatus.Offline)
                             {
                                 FirePrinterStatusInfo("Job status Offline " + q.Description + " " + job.JobName);
                                 printingStatusDetail = PrintingStatusDetail.Offline;
                             }
-                            if (job.JobStatus == PrintJobStatus.PaperOut)
+                            else if (job.JobStatus == PrintJobStatus.PaperOut)
                             {
                                 FirePrinterStatusInfo("Job status Paperout " + q.Description + " " + job.JobName);
                                 printingStatusDetail = PrintingStatusDetail.PaperOut;
                             }
-                            if (job.JobStatus == PrintJobStatus.Paused)
+                            else if (job.JobStatus == PrintJobStatus.Paused)
                             {
                                 FirePrinterStatusInfo("Job status Paused " + q.Description + " " + job.JobName);
                                 printingStatusDetail = PrintingStatusDetail.Paused;
                             }
+                            else if (job.JobStatus == PrintJobStatus.Printing)
+                            {
+                                FirePrinterStatusInfo("Printer's job status [printing] " + q.Description + " " + job.JobName);
+                                //printingStatusDetail = PrintingStatusDetail.Paused;
+                            }
+                            else if (job.JobStatus == PrintJobStatus.Completed)
+                                FirePrinterStatusInfo(job.JobName + " Completed, " + job.JobStatus.ToString() + " " + q.Description + " ");
+                            else
+                            {
+                                job.Refresh();
+                                FirePrinterStatusInfo("Job status " + job.JobStatus.ToString()
+                                                            + " " + q.Description
+                                                            + " " + job.Name);
 
+#if DEBUG
+                                Debug.Print(job.JobStatus.ToString());
+#endif
+                            }
+                            
+                            //job.NumberOfPagesPrinted
                             //foreach (var job in jobs)
                             //{
                             //    Debug.Print(job.JobStatus.ToString());
@@ -192,11 +372,11 @@ namespace PrintQueueManager.Print
                     Thread.Sleep(2000);
                 }
 
+                Debug.Print("Monitor exit...");
             });
 
-
             Debug.Print("done");
-
+            
             bool IsNetworkedPrinter(string name,out string part1,out string part2)
             {
                 bool result = false;
@@ -363,7 +543,6 @@ namespace PrintQueueManager.Print
                         //settings.DefaultPageSettings.Landscape = true;
 
                         printDocument = new PrintDocument();
-
                         printDocument.DocumentName = document.DocumentInfo.Title;
                         if (settings != null)
                             printDocument.PrinterSettings = settings;
@@ -379,7 +558,6 @@ namespace PrintQueueManager.Print
                             printDocument.DefaultPageSettings = settings.DefaultPageSettings;
                         //printDocument.DefaultPageSettings.Landscape = true;
                         printDocument.Print();
-
                     }
                 }
                 catch (Exception ex)
@@ -401,14 +579,15 @@ namespace PrintQueueManager.Print
 
             //ChangeStatus(PrintingStatus.Printing);
 
-            StartJobMonitor();
+            //StartJobMonitor();
+            StartJobMonitor2();
 
             await Task.Factory.StartNew(() =>            {
                 while (status == PrintingStatus.Printing || status == PrintingStatus.Initialized)
                     Thread.Sleep(2000);
             });
 
-
+            JobMonitorTimer.Change(Timeout.Infinite, Timeout.Infinite);
 
             return true;
 
@@ -422,13 +601,6 @@ namespace PrintQueueManager.Print
             //PDFPrinter1.PrintOptions.PrinterName = PrinterName;
             //    // Start printing
             //    PDFPrinter1.Print();
-
-
-
-
-
-
-            return true;
         }
 
         //public async Task<bool> Send2(string filePath,PrinterSettings settings,short noOfCopies=1)

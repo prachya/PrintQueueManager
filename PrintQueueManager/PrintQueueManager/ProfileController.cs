@@ -31,14 +31,21 @@ namespace PrintQueueManager
             this.profile = profile;
             printController.OnPrintingStatusChanged += PrintController_OnPrintingStatusChanged;
             printController.OnPrinterStatusInfo += PrintController_OnPrinterStatusInfo;
+            printController.OnPrinterPrintProgress += PrintController_OnPrinterPrintProgress;
             //printController.PrinterName = "Canon Inkjet 0278 Class Driver";
 
             MakePrintingsToPendings();
         }
 
+        private void PrintController_OnPrinterPrintProgress(object sender, string info)
+        {
+            frame.AddPrintingStatus(info);
+        }
+
         private void PrintController_OnPrinterStatusInfo(object sender, string info)
         {
             mainForm.log.AddMessage(info);
+            
         }
 
         public void SetFilterData(List<Filter> filterData)
@@ -269,13 +276,14 @@ namespace PrintQueueManager
 
         public void ChangeToComplete(IEnumerable<ProfileOrder> profileOrders)
         {
-            foreach (var profileOrder in profileOrders)
+            var lst = profile.ProfileOrders.Where(d => profileOrders.Any(x => x.Id == d.Id));
+            foreach (var profileOrder in lst)// in profileOrders)
             {
                 profileOrder.Order.OrderStatus = OrderStatus.Complete;
                 profileOrder.PrintingStatus = Data.PrintingStatus.Complete;
                 profileOrder.PrintingOrder = 0;
                 //profileOrder.Order.CompletedDateTime = 
-                //db.Update(profileOrder.Order);
+                db.Update(profileOrder.Order);
                 db.Update(profileOrder);
             }
             db.SaveChanges();
@@ -290,9 +298,9 @@ namespace PrintQueueManager
             //                                                              || d.PrintingStatus == Data.PrintingStatus.Printing));
 
             //var wasComplete = profileOrder.Order.OrderStatus == OrderStatus.Complete;
-            
 
-            foreach (var profileOrder in profileOrders)
+            var lst = profile.ProfileOrders.Where(d => profileOrders.Any(x => x.Id == d.Id));
+            foreach (var profileOrder in lst) // profile.ProfileOrders) // profileOrders)
             {
                 if (profileOrder.Order.OrderStatus == OrderStatus.Complete)
                 {
@@ -305,7 +313,6 @@ namespace PrintQueueManager
             }
             db.SaveChanges();
             
-
             LoadProfileOrders();
 
         }
@@ -348,6 +355,7 @@ namespace PrintQueueManager
                 CurrPage = 1;
             CreateCurrentList(CurrPage);
             frame.LoadProfileOrders(CurrentList);
+            frame.UpdateInformationStatuses();
         }
 
         public int GetNoOfPages()
@@ -659,6 +667,7 @@ namespace PrintQueueManager
                     if (printItem.ProfileOrder.Order.ReprintedQuantity != null)
                         printCopies = (short)printItem.ProfileOrder.Order.ReprintedQuantity;
                     mainForm.log.AddMessage("Printing... " + filePath);
+
                     // ************************************************************************
                     // Send file to printer now.
                     // ************************************************************************
@@ -682,8 +691,9 @@ namespace PrintQueueManager
                         return false;
                     }
 
-                    //if (!printController.Aborted)
-                    //{
+                    // ***************************
+                    // Print DONE!!
+                    // ***************************
                     printItem.ProfileOrder.CompletedPrintingTime = DateTime.Now;
                     // update item.
                     printItem.ProfileOrder.PrintingStatus = Data.PrintingStatus.Complete;
@@ -693,17 +703,18 @@ namespace PrintQueueManager
                     printItem.ProfileOrder.Order.CompletedDateTime = DateTime.Now;
                     var elapsedTime = DateTime.Now - starttime;
                     mainForm.CalibratePrinter(filePath, settings, printCopies, profile.PresetId,elapsedTime.TotalMinutes);
-
-                    //db.Update(profile);
                     db.Update(printItem.ProfileOrder);
                     db.SaveChanges();
+                    await db.Entry(profile).ReloadAsync();
 
-                    // fire event.
+                    // fire "Print Complete" event.
+                    //
                     OnPrintItemStatusChanged?.Invoke(this, printItem.ProfileOrder, printItem.ProfileOrder.PrintingStatus);
                     mainForm.log.AddMessage("Printing... " + filePath + " Completed");
                     if( Stopping )
                     {
                         mainForm.log.AddMessage("Printing... " + filePath + " Stopped");
+                        // because it's stopped forced by user so make the item being printed back to "Pending".
                         MakePrintingsToPendings();
                         Stopping = false;                      
                         this.Status = ProfileStatus.Stopped;
@@ -711,12 +722,10 @@ namespace PrintQueueManager
                         frame.lblStatus.ForeColor = System.Drawing.Color.Red;
                         return false;
                     }
-
                     LoadProfileOrders();
 
                     // done.
-                    return true;
-                
+                    return true;                
                 }
                 catch (Exception ex)
                 {

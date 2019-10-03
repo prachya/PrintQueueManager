@@ -45,6 +45,23 @@ namespace PrintQueueManager
             }
         }
 
+        public void AddPrintingStatus(string txt)
+        {
+
+            if (txtPrintingStatus.InvokeRequired)
+            {
+                txtPrintingStatus.Invoke((MethodInvoker)(() =>
+                {
+                    txtPrintingStatus.Text = txt;                    
+                }));
+
+            }
+            else
+            {
+                txtPrintingStatus.Text = txt;
+            }
+        }
+
         public bool CanChangeStatus { get
             {
                 if (orderGridView.CurrentRow == null)
@@ -54,8 +71,6 @@ namespace PrintQueueManager
                 return profileOrder.PrintingStatus != PrintingStatus.Printing;
             }
         }
-
-
 
         private void LoadFormData(PrintProfile profile)
         {
@@ -111,6 +126,8 @@ namespace PrintQueueManager
                     (item.DataBoundItem as PrintItemDataRow).ProfileOrder.PrintingStatus = PrintingStatus.Complete;
                     (item.DataBoundItem as PrintItemDataRow).PrintingStatus = "Complete";
                     orderGridView.Refresh();
+
+                    AddPrintingStatus("");
 
                     UpdateInformationStatuses();
                 }
@@ -609,11 +626,11 @@ namespace PrintQueueManager
             }
         }
 
-        private void UpdateInformationStatuses()
+        public void UpdateInformationStatuses()
         {
             var totalComplets = Controller.profile.ProfileOrders.Count(d => d.Order.OrderStatus == OrderStatus.Complete);
             var pendings = Controller.profile.ProfileOrders.Count(d => d.Order.OrderStatus == OrderStatus.Pending);
-            var pauses = Controller.profile.ProfileOrders.Count(d => d.Order.OrderStatus == OrderStatus.Paused);
+            var pauses = Controller.profile.ProfileOrders.Count(d => d.Order.OrderStatus == OrderStatus.Paused);           
             lblComlete.Text = totalComplets.ToString(); 
             lblPaused.Text = pauses.ToString();
             lblPending.Text = pendings.ToString(); 
@@ -653,9 +670,8 @@ namespace PrintQueueManager
             var lastPage = Controller.GetNoOfPages(); // Math.Round(c, 0);
             cmbPageSelector.Items.Clear();
             for(var i=1;i <= lastPage;i++)
-            {
                 cmbPageSelector.Items.Add(i);
-            }
+            
             if(cmbPageSelector.Items.Count > 0)
             {
                 var idx = cmbPageSelector.Items.IndexOf(Controller.CurrPage);

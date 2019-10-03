@@ -63,6 +63,7 @@
             this.txtProfileName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.txtPrintingStatus = new System.Windows.Forms.RichTextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.cmbPageSelector = new System.Windows.Forms.ComboBox();
             this.button4 = new System.Windows.Forms.Button();
@@ -446,6 +447,7 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.txtPrintingStatus);
             this.panel2.Controls.Add(this.label13);
             this.panel2.Controls.Add(this.cmbPageSelector);
             this.panel2.Controls.Add(this.button4);
@@ -457,6 +459,16 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(1298, 82);
             this.panel2.TabIndex = 2;
+            // 
+            // txtPrintingStatus
+            // 
+            this.txtPrintingStatus.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtPrintingStatus.Location = new System.Drawing.Point(64, 34);
+            this.txtPrintingStatus.Name = "txtPrintingStatus";
+            this.txtPrintingStatus.ReadOnly = true;
+            this.txtPrintingStatus.Size = new System.Drawing.Size(485, 36);
+            this.txtPrintingStatus.TabIndex = 17;
+            this.txtPrintingStatus.Text = "";
             // 
             // label13
             // 
@@ -932,5 +944,6 @@
         private System.Windows.Forms.Button btnEditFilter;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.ComboBox cmbPageSelector;
+        private System.Windows.Forms.RichTextBox txtPrintingStatus;
     }
 }
