@@ -42,22 +42,15 @@ namespace PrintQueueManager.Print
 
         void StartJobMonitor2()
         {
-            //JobMonitorTimer = new Timer()
             JobMonitorTimer = new Timer(
                         new TimerCallback(TickTimer),
                         null,
-                        2000,
+                        1000,
                         1000);
         }
 
         void TickTimer(object state)
         {
-            //Console.Write("Tick! ");
-            //Console.WriteLine(
-            //    Thread.CurrentThread.
-            //    ManagedThreadId.ToString());
-            //Thread.Sleep(4000);
-
             string part2 = "";
             string part1 = "";
             PrintQueue q = null;
@@ -75,6 +68,17 @@ namespace PrintQueueManager.Print
             q.Refresh();
             var qs = q.QueueStatus;
             var jobs = q.GetPrintJobInfoCollection();
+
+            if (terminated)
+            {
+                foreach (var pj in jobs)
+                    pj.Cancel();
+                status = PrintingStatus.Aborted;
+                // stop the monitor.
+                JobMonitorTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                return;
+            }
+
 
             if (qs == PrintQueueStatus.Paused)  // print queue of the printer is paused.
             {
@@ -109,7 +113,6 @@ namespace PrintQueueManager.Print
                 //var jobs = q.GetPrintJobInfoCollection();
                 if (jobs.Count() > 0)
                 {
-                    //FirePrinterStatusInfo("Job count on queue " + q.Description + " " + jobs.Count().ToString());
                     var job = jobs.FirstOrDefault();
                     if (job.JobStatus == PrintJobStatus.Offline)
                     {
@@ -144,7 +147,7 @@ namespace PrintQueueManager.Print
 #endif
                     }
 
-                    FirePrinterPrintProgress("Page: " + job.NumberOfPages.ToString()
+                    FirePrinterPrintProgress("Printing Page: " + job.NumberOfPages.ToString()
                                                       + "    " + job.JobStatus.ToString()
                                                       + " job: " + job.Name + " on " + q.Name);
                     //job.NumberOfPagesPrinted
@@ -487,8 +490,7 @@ namespace PrintQueueManager.Print
             e.HasMorePages = currentPage < document.Pages.Count;
         }
 
-        void autoPosition(Graphics graphics, double printerWidth,
-           double printerHeight, double pdfWidth, double pdfHeight)
+        void autoPosition(Graphics graphics, double printerWidth,double printerHeight, double pdfWidth, double pdfHeight)
         {
             double scaleX = printerWidth / pdfWidth;
             double scaleY = printerHeight / pdfHeight;
@@ -557,7 +559,9 @@ namespace PrintQueueManager.Print
                         if(settings != null)
                             printDocument.DefaultPageSettings = settings.DefaultPageSettings;
                         //printDocument.DefaultPageSettings.Landscape = true;
+                        FirePrinterStatusInfo("Sending " + filePath + " to printer");
                         printDocument.Print();
+                        FirePrinterStatusInfo("Sending " + filePath + " to printer ... done");
                     }
                 }
                 catch (Exception ex)
@@ -580,13 +584,15 @@ namespace PrintQueueManager.Print
             //ChangeStatus(PrintingStatus.Printing);
 
             //StartJobMonitor();
-            StartJobMonitor2();
 
+            // start print job monitor.
+            StartJobMonitor2();            
             await Task.Factory.StartNew(() =>            {
                 while (status == PrintingStatus.Printing || status == PrintingStatus.Initialized)
                     Thread.Sleep(2000);
             });
 
+            // stop the monitor.
             JobMonitorTimer.Change(Timeout.Infinite, Timeout.Infinite);
 
             return true;
@@ -677,10 +683,8 @@ namespace PrintQueueManager.Print
         //    return true;
         //}
 
-
         public async Task<bool> Send(string filePath)
         {
-
             if (!File.Exists(filePath))
             {                
                 return false;

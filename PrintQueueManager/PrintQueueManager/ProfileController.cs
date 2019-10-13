@@ -154,7 +154,8 @@ namespace PrintQueueManager
 
         private void CreateCurrentList()
         {
-            CurrentList = db.ProfileOrders.Where(d => d.ProfileId == profile.Id).Select(d => new PrintItemDataRow
+            CurrentList = profile.ProfileOrders.Where(d => d.ProfileId == profile.Id).Select(d => new PrintItemDataRow
+            //CurrentList = db.ProfileOrders.Where(d => d.ProfileId == profile.Id).Select(d => new PrintItemDataRow
             {
                 Quantity = d.Order.Quantity,
                 SKU = d.Order.Sku,
@@ -264,14 +265,16 @@ namespace PrintQueueManager
 
         public void ChangeToPaused(IEnumerable<ProfileOrder> profileOrders)
         {
-            foreach(var profileOrder in profileOrders)
+            var lst = profile.ProfileOrders.Where(d => profileOrders.Any(x => x.Id == d.Id));
+            foreach (var profileOrder in lst)
             {
                 profileOrder.Order.OrderStatus = OrderStatus.Paused;
                 profileOrder.PrintingStatus = Data.PrintingStatus.Paused;
-                //db.Update(profileOrder.Order);
+                db.Update(profileOrder.Order);
                 db.Update(profileOrder);
             }            
             db.SaveChanges();
+            LoadProfileOrders();
         }
 
         public void ChangeToComplete(IEnumerable<ProfileOrder> profileOrders)
@@ -303,9 +306,7 @@ namespace PrintQueueManager
             foreach (var profileOrder in lst) // profile.ProfileOrders) // profileOrders)
             {
                 if (profileOrder.Order.OrderStatus == OrderStatus.Complete)
-                {
                     profileOrder.PrintingOrder = GetNextLastPrintingOrder();
-                }
                 profileOrder.Order.OrderStatus = OrderStatus.Pending;
                 profileOrder.PrintingStatus = Data.PrintingStatus.Pending;
                 db.Update(profileOrder.Order);
@@ -668,61 +669,86 @@ namespace PrintQueueManager
                         printCopies = (short)printItem.ProfileOrder.Order.ReprintedQuantity;
                     mainForm.log.AddMessage("Printing... " + filePath);
 
-                    // ************************************************************************
-                    // Send file to printer now.
-                    // ************************************************************************
-                    var starttime = DateTime.Now;
-                    if (!await printController.Send3(filePath,settings,printCopies))
+                    if (System.IO.File.Exists(filePath)) //TODO: not used??? // MUST check again if the file being printed exists
                     {
-                        mainForm.log.AddMessage("Failed printing file: " + filePath);
-                        OnPrintItemStatusChanged?.Invoke(this, printItem.ProfileOrder, Data.PrintingStatus.Printing);
-                        return false;
-                    }
+                        // ************************************************************************
+                        // Send file to printer now.
+                        // ************************************************************************
+                        var starttime = DateTime.Now;
+                        if (!await printController.Send3(filePath, settings, printCopies))
+                        {
+                            mainForm.log.AddMessage("Failed printing file: " + filePath);
+                            OnPrintItemStatusChanged?.Invoke(this, printItem.ProfileOrder, Data.PrintingStatus.Printing);
+                            return false;
+                        }
 
-                    if (printController.Aborted)
-                    {
-                        mainForm.log.AddMessage("Printing... " + filePath + " Aborted");
-                        MakePrintingsToPendings();
-                        Stopping = false;
-                        this.Status = ProfileStatus.Stopped;
-                        frame.lblStatus.Text = "Stopped";
-                        frame.lblStatus.ForeColor = System.Drawing.Color.Red;
+                        if (printController.Aborted)
+                        {
+                            mainForm.log.AddMessage("Printing... " + filePath + " Aborted");
+                            MakePrintingsToPendings();
+                            Stopping = false;
+                            this.Status = ProfileStatus.Stopped;
+                            frame.lblStatus.Text = "Stopped";
+                            frame.lblStatus.ForeColor = System.Drawing.Color.Red;
+                            LoadProfileOrders();
+                            return false;
+                        }
+
+                        // ***************************
+                        // Print DONE!!
+                        // ***************************
+                        printItem.ProfileOrder.CompletedPrintingTime = DateTime.Now;
+                        // update item.
+                        printItem.ProfileOrder.PrintingStatus = Data.PrintingStatus.Complete;
+                        printItem.PrintingOrder = 0;
+                        printItem.ProfileOrder.PrintingOrder = 0;
+                        printItem.ProfileOrder.Order.OrderStatus = OrderStatus.Complete;
+                        printItem.ProfileOrder.Order.CompletedDateTime = DateTime.Now;
+                        var elapsedTime = DateTime.Now - starttime;
+                        mainForm.CalibratePrinter(filePath, settings, printCopies, profile.PresetId, elapsedTime.TotalMinutes);
+                        db.Update(printItem.ProfileOrder);
+                        db.SaveChanges();
+                        //await db.Entry(profile).ReloadAsync();
+
+                        // fire "Print Complete" event.
+                        //
+                        OnPrintItemStatusChanged?.Invoke(this, printItem.ProfileOrder, printItem.ProfileOrder.PrintingStatus);
+                        mainForm.log.AddMessage("Printing... " + filePath + " Completed");
+                        if (Stopping)
+                        {
+                            mainForm.log.AddMessage("Printing... " + filePath + " Stopped");
+                            // because it's stopped forced by user so make the item being printed back to "Pending".
+                            MakePrintingsToPendings();
+                            Stopping = false;
+                            this.Status = ProfileStatus.Stopped;
+                            frame.lblStatus.Text = "Stopped";
+                            frame.lblStatus.ForeColor = System.Drawing.Color.Red;
+                            return false;
+                        }
                         LoadProfileOrders();
-                        return false;
                     }
-
-                    // ***************************
-                    // Print DONE!!
-                    // ***************************
-                    printItem.ProfileOrder.CompletedPrintingTime = DateTime.Now;
-                    // update item.
-                    printItem.ProfileOrder.PrintingStatus = Data.PrintingStatus.Complete;
-                    printItem.PrintingOrder = 0;
-                    printItem.ProfileOrder.PrintingOrder = 0;
-                    printItem.ProfileOrder.Order.OrderStatus = OrderStatus.Complete;
-                    printItem.ProfileOrder.Order.CompletedDateTime = DateTime.Now;
-                    var elapsedTime = DateTime.Now - starttime;
-                    mainForm.CalibratePrinter(filePath, settings, printCopies, profile.PresetId,elapsedTime.TotalMinutes);
-                    db.Update(printItem.ProfileOrder);
-                    db.SaveChanges();
-                    await db.Entry(profile).ReloadAsync();
-
-                    // fire "Print Complete" event.
-                    //
-                    OnPrintItemStatusChanged?.Invoke(this, printItem.ProfileOrder, printItem.ProfileOrder.PrintingStatus);
-                    mainForm.log.AddMessage("Printing... " + filePath + " Completed");
-                    if( Stopping )
+                    else
                     {
-                        mainForm.log.AddMessage("Printing... " + filePath + " Stopped");
-                        // because it's stopped forced by user so make the item being printed back to "Pending".
-                        MakePrintingsToPendings();
-                        Stopping = false;                      
-                        this.Status = ProfileStatus.Stopped;
-                        frame.lblStatus.Text = "Stopped";
-                        frame.lblStatus.ForeColor = System.Drawing.Color.Red;
-                        return false;
+                        //TODO: this section is probably not used.
+                        #region "NOT USED ????"
+                        printItem.ProfileOrder.Order.Remark = printItem.ProfileOrder.Order.Remark + " " + DateTime.Now.ToString() + " ERROR--file not found";
+                        mainForm.log.AddMessage("SKU: " + printItem.SKU + "  file not found " + filePath);
+                        var orders = new List<ProfileOrder>();
+                        orders.Add(printItem.ProfileOrder);
+                        ChangeToPaused(orders);
+                        if (printController.Aborted)
+                        {
+                            mainForm.log.AddMessage("Printing... " + filePath + " Aborted");
+                            MakePrintingsToPendings();
+                            Stopping = false;
+                            this.Status = ProfileStatus.Stopped;
+                            frame.lblStatus.Text = "Stopped";
+                            frame.lblStatus.ForeColor = System.Drawing.Color.Red;
+                            LoadProfileOrders();
+                            return false;
+                        }
+                        #endregion
                     }
-                    LoadProfileOrders();
 
                     // done.
                     return true;                
