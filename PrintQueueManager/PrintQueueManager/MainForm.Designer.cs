@@ -36,6 +36,7 @@
             this.createProsetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fTPLocationSettingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshRepoFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.searchOrdersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -83,6 +84,7 @@
             this.createProsetToolStripMenuItem,
             this.fTPLocationSettingToolStripMenuItem,
             this.refreshRepoFolderToolStripMenuItem,
+            this.searchOrdersToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.menuToolStripMenuItem.Name = "menuToolStripMenuItem";
             this.menuToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
@@ -91,35 +93,42 @@
             // newProfileToolStripMenuItem
             // 
             this.newProfileToolStripMenuItem.Name = "newProfileToolStripMenuItem";
-            this.newProfileToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.newProfileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.newProfileToolStripMenuItem.Text = "New Profile";
             this.newProfileToolStripMenuItem.Click += new System.EventHandler(this.newProfileToolStripMenuItem_Click);
             // 
             // createProsetToolStripMenuItem
             // 
             this.createProsetToolStripMenuItem.Name = "createProsetToolStripMenuItem";
-            this.createProsetToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.createProsetToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.createProsetToolStripMenuItem.Text = "Create Preset";
             this.createProsetToolStripMenuItem.Click += new System.EventHandler(this.createProsetToolStripMenuItem_Click);
             // 
             // fTPLocationSettingToolStripMenuItem
             // 
             this.fTPLocationSettingToolStripMenuItem.Name = "fTPLocationSettingToolStripMenuItem";
-            this.fTPLocationSettingToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.fTPLocationSettingToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.fTPLocationSettingToolStripMenuItem.Text = "Settings";
             this.fTPLocationSettingToolStripMenuItem.Click += new System.EventHandler(this.fTPLocationSettingToolStripMenuItem_Click);
             // 
             // refreshRepoFolderToolStripMenuItem
             // 
             this.refreshRepoFolderToolStripMenuItem.Name = "refreshRepoFolderToolStripMenuItem";
-            this.refreshRepoFolderToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.refreshRepoFolderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.refreshRepoFolderToolStripMenuItem.Text = "Refresh repo folder";
             this.refreshRepoFolderToolStripMenuItem.Click += new System.EventHandler(this.refreshRepoFolderToolStripMenuItem_Click);
+            // 
+            // searchOrdersToolStripMenuItem
+            // 
+            this.searchOrdersToolStripMenuItem.Name = "searchOrdersToolStripMenuItem";
+            this.searchOrdersToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.searchOrdersToolStripMenuItem.Text = "Search Orders";
+            this.searchOrdersToolStripMenuItem.Click += new System.EventHandler(this.SearchOrdersToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -191,7 +200,7 @@
             this.DoubleBuffered = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
-            this.Text = "Print Queue Manager v1.41.22";
+            this.Text = "Print Queue Manager v1.42.23";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.menuStrip1.ResumeLayout(false);
@@ -218,6 +227,7 @@
         private System.Windows.Forms.ToolStripMenuItem printTestToolStripMenuItem;
         public System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.ToolStripMenuItem moretestToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem searchOrdersToolStripMenuItem;
     }
 }
 

@@ -197,6 +197,12 @@
     </Compile>
     <Compile Include="Data\Orders.cs" />
     <Compile Include="OrderController.cs" />
+    <Compile Include="OrdersBrowser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OrdersBrowser.Designer.cs">
+      <DependentUpon>OrdersBrowser.cs</DependentUpon>
+    </Compile>
     <Compile Include="OrdersImporter.cs" />
     <Compile Include="Data\PrintProfiles.cs" />
     <Compile Include="PresetForm.cs">
@@ -258,6 +264,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OrdersBrowser.resx">
+      <DependentUpon>OrdersBrowser.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PresetForm.resx">
       <DependentUpon>PresetForm.cs</DependentUpon>

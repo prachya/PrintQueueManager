@@ -318,6 +318,49 @@ namespace PrintQueueManager
 
         }
 
+        public void AddOrder(Order order)
+        {
+            if(this.profile.ProfileOrders.Any(d=>d.Order.OrderId==order.OrderId && d.Order.Sku == order.Sku))
+            {
+                if(MessageBox.Show("Order already in this profile. click OK to continue, Cancel to abort.","",MessageBoxButtons.OKCancel) == DialogResult.Cancel)
+                {
+                    return;
+                }
+            }
+
+            var pendingList = db.ProfileOrders.Where(d => d.ProfileId == profile.Id
+                                                                && (d.PrintingStatus == Data.PrintingStatus.Pending
+                                                                 || d.PrintingStatus == Data.PrintingStatus.Printing));
+            var lastPrintingOrder = 100;  // higher number print last, lower number print first.
+            if (pendingList.Any())
+                lastPrintingOrder = pendingList.Max(d => d.PrintingOrder);
+
+            var profileId = profile.Id;
+            var profiledOrder = new ProfileOrder();
+            var filePath = Program.mainForm.config.PDFFolder + ProfileController.RemoveIgnoreText(profile, order.Sku) + ".pdf";
+            order.Linked = System.IO.File.Exists(filePath);
+            if (order.Linked)
+            {
+                db.Update(order);
+                //db.SaveChanges();
+            }
+#if DEBUG
+
+#endif
+            profiledOrder.OrderId = order.Id;
+            profiledOrder.ProfileId = profileId;
+
+            if ((order.OrderStatus == OrderStatus.Paused))
+                profiledOrder.PrintingStatus = Data.PrintingStatus.Paused;
+            else
+                profiledOrder.PrintingStatus = Data.PrintingStatus.Pending;
+            profiledOrder.PrintingOrder = ++lastPrintingOrder;
+
+            db.Add(profiledOrder);
+            db.SaveChanges();
+            LoadProfileOrders();
+        }
+
         public void OrderDown(ProfileOrder profileOrder)
         {
             if (profileOrder.PrintingOrder == 0)
@@ -341,9 +384,9 @@ namespace PrintQueueManager
         }
 
 #if DEBUG
-        public int RecordsPerPage = 50;
+        public int RecordsPerPage = 200;
 #else
-        public int RecordsPerPage = 100;
+        public int RecordsPerPage = 200;
 #endif
 
         public int CurrPage = 1;

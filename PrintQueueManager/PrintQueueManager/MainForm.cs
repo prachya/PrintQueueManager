@@ -223,6 +223,17 @@ namespace PrintQueueManager
         private void importToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DoImport();
+            RemoveOutdatedRecords();
+        }
+
+        private void RemoveOutdatedRecords()
+        {
+            var lst = db.Orders.Where(d => (DateTime.Now - d.CreatedDate).TotalDays > 90);
+            var removeList = db.ProfileOrders.Where(d => lst.Any(v => v.Id == d.OrderId));
+            db.RemoveRange(removeList);
+            db.RemoveRange(lst);
+            db.SaveChanges();
+            RefreshProfiles();
         }
 
         private void DoImport(Stream stream)
@@ -230,7 +241,9 @@ namespace PrintQueueManager
             var i = new OrdersImporter();
             //var importedList = i.Import("orders.csv");  
 #if DEBUG
-            var importedList = i.Import(@"c:\temp\PrintRun3.csv"); // C:\projects2\PrintQueueManager\PrintRun(1).csv");
+            //var importedList = i.Import(@"c:\temp\PrintRun3.csv"); // C:\projects2\PrintQueueManager\PrintRun(1).csv");
+            var importedList = i.Import(stream);
+            //File.WriteAllText(@"c:\temp\dddggg.csv", stream);
 #else
             var importedList = i.Import(stream);
 #endif
@@ -252,7 +265,10 @@ namespace PrintQueueManager
             // 
 #if DEBUG
             //return;
-            var newOrderList = importedList.ToList();
+            //var newOrderList = importedList.ToList();
+            var xx = importedList.Where(d => d.OrderId == "128109");
+
+            var newOrderList = importedList.Where(d => !db.Orders.Any(a => (a.OrderId.ToString() + a.Sku.ToString()) == (d.OrderId.ToString() + d.Sku.ToString()))).ToList();
 #else
 
             var newOrderList = importedList.Where(d => !db.Orders.Any(a => (a.OrderId.ToString() + a.Sku.ToString()) == (d.OrderId.ToString() + d.Sku.ToString()) ) ).ToList();
@@ -586,7 +602,7 @@ namespace PrintQueueManager
             log.Show();
 
 #if DEBUG
-            timCheckFTP.Interval = ((20 * 60) * 1000); 
+            timCheckFTP.Interval = 60000; // 1000000; //((20 * 60) * 1000); 
 #else
             timCheckFTP.Interval = ((config.CheckInterval * 60) * 1000);
 #endif
@@ -632,12 +648,20 @@ namespace PrintQueueManager
 
                             //if (await DownloadCSVToStream(config.FTPServer, config.FTPUsername, config.FTPPassword, stream))
                             //{
-                                DoImport(stream);                                
+                            //    DoImport(stream);
+
+                            if (await DownloadCSVToStream(config.FTPServer, config.FTPUsername, config.FTPPassword, stream))
+                            {
+                                DoImport(stream);
+                                RemoveOutdatedRecords();
+                            }
+
                             //}
 #else
                             if (await DownloadCSVToStream(config.FTPServer, config.FTPUsername, config.FTPPassword, stream))
                             {
                                 DoImport(stream);                                
+                                RemoveOutdatedRecords();
                             }
 
 #endif
@@ -705,7 +729,10 @@ namespace PrintQueueManager
                 var data = await client.DownloadDataTaskAsync(uri);
                 outStream.Write(data,0,data.Length);
                 log.AddMessage("Downloading CSV...done");
+#if DEBUG
 
+#endif
+                File.WriteAllBytes("import.csv", data);
                 return true;
             }
             catch (Exception ex)
@@ -1064,6 +1091,25 @@ namespace PrintQueueManager
         private void TabControl1_TabIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        
+        private void SearchOrdersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var brows = new OrdersBrowser();
+            if(brows.ShowDialog() == DialogResult.OK)
+            {
+                if(brows.GetProfile() != 0)
+                {
+                    var profile = ProfileControllers.Where(d => d.profile.Id == brows.GetProfile()).FirstOrDefault();
+                    if(profile != null)
+                    {
+                        var order = brows.GetOrder();
+                        if(order != null)
+                            profile.AddOrder(order);
+                    }
+                }
+            }
         }
     }
 

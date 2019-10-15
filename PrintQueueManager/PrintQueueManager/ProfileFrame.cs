@@ -1323,9 +1323,11 @@ namespace PrintQueueManager
         public int PrintingOrder { get; set; }
         public int Id { get; set; }
         public ProfileOrder ProfileOrder { get; set; }
+        public Order order { get; set; }
         public string LinkedFileName { get; set; }
         public string Reprint { get; set; } = "Reprint";
         public string Remark { get; set; }
+        public string OrderId { get; set; }
         public string ShortTitle { get; set; }
         public string PrintRun { get; set; }
 
