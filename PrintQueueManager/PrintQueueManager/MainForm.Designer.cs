@@ -46,7 +46,11 @@
             this.moretestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.timCheckFTP = new System.Windows.Forms.Timer(this.components);
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.StatusMessage = new System.Windows.Forms.StatusStrip();
+            this.StatusMessageLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip1.SuspendLayout();
+            this.StatusMessage.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -59,7 +63,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 24);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1215, 635);
+            this.tabControl1.Size = new System.Drawing.Size(1215, 574);
             this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabControl1.TabIndex = 0;
             this.tabControl1.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControl1_DrawItem);
@@ -93,42 +97,42 @@
             // newProfileToolStripMenuItem
             // 
             this.newProfileToolStripMenuItem.Name = "newProfileToolStripMenuItem";
-            this.newProfileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.newProfileToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.newProfileToolStripMenuItem.Text = "New Profile";
             this.newProfileToolStripMenuItem.Click += new System.EventHandler(this.newProfileToolStripMenuItem_Click);
             // 
             // createProsetToolStripMenuItem
             // 
             this.createProsetToolStripMenuItem.Name = "createProsetToolStripMenuItem";
-            this.createProsetToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.createProsetToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.createProsetToolStripMenuItem.Text = "Create Preset";
             this.createProsetToolStripMenuItem.Click += new System.EventHandler(this.createProsetToolStripMenuItem_Click);
             // 
             // fTPLocationSettingToolStripMenuItem
             // 
             this.fTPLocationSettingToolStripMenuItem.Name = "fTPLocationSettingToolStripMenuItem";
-            this.fTPLocationSettingToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.fTPLocationSettingToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.fTPLocationSettingToolStripMenuItem.Text = "Settings";
             this.fTPLocationSettingToolStripMenuItem.Click += new System.EventHandler(this.fTPLocationSettingToolStripMenuItem_Click);
             // 
             // refreshRepoFolderToolStripMenuItem
             // 
             this.refreshRepoFolderToolStripMenuItem.Name = "refreshRepoFolderToolStripMenuItem";
-            this.refreshRepoFolderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.refreshRepoFolderToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.refreshRepoFolderToolStripMenuItem.Text = "Refresh repo folder";
             this.refreshRepoFolderToolStripMenuItem.Click += new System.EventHandler(this.refreshRepoFolderToolStripMenuItem_Click);
             // 
             // searchOrdersToolStripMenuItem
             // 
             this.searchOrdersToolStripMenuItem.Name = "searchOrdersToolStripMenuItem";
-            this.searchOrdersToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.searchOrdersToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.searchOrdersToolStripMenuItem.Text = "Search Orders";
             this.searchOrdersToolStripMenuItem.Click += new System.EventHandler(this.SearchOrdersToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -141,7 +145,7 @@
             this.printTestToolStripMenuItem,
             this.moretestToolStripMenuItem});
             this.testToolStripMenuItem.Name = "testToolStripMenuItem";
-            this.testToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
+            this.testToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.testToolStripMenuItem.Text = "Test";
             // 
             // importToolStripMenuItem
@@ -190,21 +194,50 @@
             this.timCheckFTP.Interval = 10000;
             this.timCheckFTP.Tick += new System.EventHandler(this.timCheckFTP_Tick);
             // 
+            // panel1
+            // 
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(0, 598);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1215, 39);
+            this.panel1.TabIndex = 1;
+            this.panel1.Visible = false;
+            // 
+            // StatusMessage
+            // 
+            this.StatusMessage.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.StatusMessageLabel});
+            this.StatusMessage.Location = new System.Drawing.Point(0, 637);
+            this.StatusMessage.Name = "StatusMessage";
+            this.StatusMessage.Size = new System.Drawing.Size(1215, 22);
+            this.StatusMessage.TabIndex = 0;
+            this.StatusMessage.Text = "statusStrip1";
+            // 
+            // StatusMessageLabel
+            // 
+            this.StatusMessageLabel.Name = "StatusMessageLabel";
+            this.StatusMessageLabel.Size = new System.Drawing.Size(13, 17);
+            this.StatusMessageLabel.Text = "  ";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1215, 659);
             this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.StatusMessage);
             this.Controls.Add(this.menuStrip1);
             this.DoubleBuffered = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
-            this.Text = "Print Queue Manager v1.42.23";
+            this.Text = "Print Queue Manager v1.42.287";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.StatusMessage.ResumeLayout(false);
+            this.StatusMessage.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -228,6 +261,9 @@
         public System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.ToolStripMenuItem moretestToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem searchOrdersToolStripMenuItem;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.StatusStrip StatusMessage;
+        private System.Windows.Forms.ToolStripStatusLabel StatusMessageLabel;
     }
 }
 

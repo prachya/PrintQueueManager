@@ -238,6 +238,7 @@ namespace PrintQueueManager
 
         private void DoImport(Stream stream)
         {
+            StatusMessageLabel.Text = "Importing...";
             var i = new OrdersImporter();
             //var importedList = i.Import("orders.csv");  
 #if DEBUG
@@ -273,10 +274,11 @@ namespace PrintQueueManager
 
             var newOrderList = importedList.Where(d => !db.Orders.Any(a => (a.OrderId.ToString() + a.Sku.ToString()) == (d.OrderId.ToString() + d.Sku.ToString()) ) ).ToList();
 #endif
-
+            
             // sort by order time
             //
             newOrderList = newOrderList.OrderByDescending(d => d.TimeOfOrder).ToList();
+            
 
             var order = new OrderController(db);
             // check if PDFs linked
@@ -288,7 +290,9 @@ namespace PrintQueueManager
 
             order.SaveOrders(newOrderList); //, false);
 
-            log.AddMessage("no. of records to import " + newOrderList.Count());
+            var noToImport = newOrderList.Count();
+            log.AddMessage("no. of records to import " + noToImport);
+            StatusMessageLabel.Text = "Last Import... orders to import: " + noToImport.ToString();
 
             var addedList = new List<Order>();
 
@@ -400,10 +404,15 @@ namespace PrintQueueManager
             }
 
             db.SaveChanges();
-            log.AddMessage("no. of records imported " + addedList.Count()); 
+            log.AddMessage("no. of records imported " + addedList.Count());
+            StatusMessageLabel.Text = "Last Import... Orders to import: " + noToImport.ToString()
+                                          + ", imported: " + addedList.Count()
+                                          + ", not imported " + (newOrderList.Count).ToString()
+                                          + " completed at: " + DateTime.Now.ToString();
 
             //var unAddedList = newOrderList.Where(d => !addedList.Any(x => x == d));
-            log.AddMessage("no. of records not imported " + newOrderList.Count.ToString());// (newOrderList.Count - addedList.Count).ToString() ); // unAddedList.Count());
+            //log.AddMessage("no. of records not imported " + newOrderList.Count.ToString());// (newOrderList.Count - addedList.Count).ToString() ); // unAddedList.Count());
+            log.AddMessage("no. of records not imported " + (newOrderList.Count).ToString()); // - addedList.Count).ToString() );
 
             RefreshProfiles();
         }
@@ -414,7 +423,7 @@ namespace PrintQueueManager
 #if DEBUG
             //var importedList = i.Import("orders221.csv"); // cc.csv");  
             //var importedList = i.Import(@"C:\projects2\PrintQueueManager\orders.csv");
-            var importedList = i.Import(@"c:\temp\order.csv");
+            var importedList = i.Import(@"c:\temp\printrun1.csv");
 #else
             var importedList = i.Import("orders.csv");
 #endif
@@ -602,11 +611,16 @@ namespace PrintQueueManager
             log.Show();
 
 #if DEBUG
-            timCheckFTP.Interval = 60000; // 1000000; //((20 * 60) * 1000); 
+            timCheckFTP.Interval = ((2 * 60) * 1000);
 #else
             timCheckFTP.Interval = ((config.CheckInterval * 60) * 1000);
 #endif
+
+#if DEBUG
+
+#else
             timCheckFTP.Start();
+#endif
 
         }
         private bool IsStarted()

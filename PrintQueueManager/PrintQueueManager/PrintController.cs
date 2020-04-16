@@ -475,15 +475,17 @@ namespace PrintQueueManager.Print
             e.Graphics.PageUnit = GraphicsUnit.Point;
 
             Page page = document.Pages[currentPage++];
-
+            //e.PageSettings.PaperSize.Width = 11.7;
+            //e.PageSettings.PaperSize.Height = 16.5;
+            //e.PageSettings. .Kind = PaperKind.A3;
             autoPosition(
                e.Graphics,
                (e.PageSettings.PaperSize.Width * 72) / 100,
                (e.PageSettings.PaperSize.Height * 72) / 100,
                // As of .NET 2.0, you can use the printable area 
                // instead of the papersize.
-               // ( e.PageSettings.PrintableArea.Width * 72 ) / 100, 
-               // ( e.PageSettings.PrintableArea.Height * 72 ) / 100,
+               //( e.PageSettings.PrintableArea.Width * 72 ) / 100, 
+               //( e.PageSettings.PrintableArea.Height * 72 ) / 100,
                page.Width, page.Height);
 
             page.Draw(e.Graphics);        
@@ -515,7 +517,7 @@ namespace PrintQueueManager.Print
                 e.Graphics.PageUnit = GraphicsUnit.Point;
                 Page page = document.Pages[currentPage];
 
-                e.Graphics.MultiplyTransform(GetPrintTransformation(page, e.Graphics.VisibleClipBounds));
+                //e.Graphics.MultiplyTransform(GetPrintTransformation(page, e.Graphics.VisibleClipBounds));
                 page.Draw(e.Graphics);
                 if (currentPage < document.Pages.Count - 1)
                 {
@@ -551,13 +553,19 @@ namespace PrintQueueManager.Print
                         else
                             printDocument.PrinterSettings.PrinterName = PrinterName;
                         printDocument.DocumentName = filePath;
-                        printDocument.PrintPage += new PrintPageEventHandler(printPage);
+                        //printDocument.PrintPage += new PrintPageEventHandler(printPage);
+                        printDocument.PrintPage += new PrintPageEventHandler(printFitPage);
                         printDocument.PrintController = new StandardPrintController();
                         printDocument.OriginAtMargins = true;
                         printDocument.PrinterSettings.Copies = noOfCopies;
                         //printDocument.PrinterSettings.DefaultPageSettings.Landscape = true;
                         if(settings != null)
                             printDocument.DefaultPageSettings = settings.DefaultPageSettings;
+                        printDocument.DefaultPageSettings.Margins.Left = 0;
+                        printDocument.DefaultPageSettings.Margins.Right = 0;
+                        printDocument.DefaultPageSettings.Margins.Bottom = 0;
+                        printDocument.DefaultPageSettings.Margins.Top = 0;
+
                         //printDocument.DefaultPageSettings.Landscape = true;
                         FirePrinterStatusInfo("Sending " + filePath + " to printer");
                         printDocument.Print();

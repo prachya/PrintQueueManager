@@ -96,16 +96,23 @@ namespace PrintQueueManager.Data
                     
                     var receivedDate = csv.GetField("Received date");
                     var createdDate = csv.GetField("Created Date");
+                    //18/12/2019 13:16
+#if DEBUG
+                    order.ReceivedDate = DateTime.ParseExact(receivedDate, "dd/MM/yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+                    order.CreatedDate = DateTime.ParseExact(createdDate, "dd/MM/yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+
+#else
                     if(receivedDate.Contains("-"))
                     {
                         order.ReceivedDate = DateTime.ParseExact(receivedDate, "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-                        order.CreatedDate = DateTime.ParseExact(receivedDate, "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                        order.CreatedDate = DateTime.ParseExact(createdDate, "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                     }
                     else
                     {
                         order.ReceivedDate = DateTime.ParseExact(receivedDate, "M/dd/yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture);
-                        order.CreatedDate = DateTime.ParseExact(receivedDate, "M/dd/yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+                        order.CreatedDate = DateTime.ParseExact(createdDate, "M/dd/yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture);
                     }
+#endif
 
                     //try
                     //{

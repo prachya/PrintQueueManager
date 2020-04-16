@@ -423,7 +423,7 @@ namespace PrintQueueManager
                 //if (sku.StartsWith(item.IgnoreText))
                 if(res.Contains(item.IgnoreText))
                 {
-                    var startIdx = sku.IndexOf(item.IgnoreText);
+                    var startIdx = res.IndexOf(item.IgnoreText);
                     res = res.Remove(startIdx,item.IgnoreText.Length);                   
                 }
             }

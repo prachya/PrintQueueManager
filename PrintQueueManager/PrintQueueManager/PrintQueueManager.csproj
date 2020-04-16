@@ -154,7 +154,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="TallComponents.PDF.Rasterizer, Version=3.0.147.0, Culture=neutral, PublicKeyToken=76bf2dedaa68ccb5, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\TallComponents PDFRasterizer.NET 3.0.147.0\net40\TallComponents.PDF.Rasterizer.dll</HintPath>
+      <HintPath>..\..\Tallcomponents PDFRasterizer.NET 3.0.178.0\assemblies\net40\TallComponents.PDF.Rasterizer.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
