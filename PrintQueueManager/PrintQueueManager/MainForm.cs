@@ -67,6 +67,7 @@ namespace PrintQueueManager
                 (tabControl1.SelectedTab.Controls[0] as ProfileFrame).maskedTextBox1.Enabled = (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnDown.Enabled;
                 (tabControl1.SelectedTab.Controls[0] as ProfileFrame).maskedTextBox2.Enabled = (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnDown.Enabled;
                 (tabControl1.SelectedTab.Controls[0] as ProfileFrame).checkBox1.Enabled = (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnDown.Enabled;
+                (tabControl1.SelectedTab.Controls[0] as ProfileFrame).chkNoAutoScaling.Enabled = (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnDown.Enabled;
                 (tabControl1.SelectedTab.Controls[0] as ProfileFrame).cmbPrinter.Enabled = (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnDown.Enabled;
                 (tabControl1.SelectedTab.Controls[0] as ProfileFrame).cmbPresets.Enabled = (tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnDown.Enabled;
                 //(tabControl1.SelectedTab.Controls[0] as ProfileFrame).btnMove.Enabled = (tabControl1.SelectedTab.Controls[0] as ProfileFrame).CanMove;
@@ -1122,6 +1123,26 @@ namespace PrintQueueManager
                         if(order != null)
                             profile.AddOrder(order);
                     }
+                }
+            }
+        }
+
+        private void manuallyImportCSVToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //
+            if (openFileDialog1.ShowDialog()== DialogResult.OK)
+            {
+                if (MessageBox.Show("Please confirm.","Import CSV", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation) == DialogResult.OK)
+                {
+                    var i = new OrdersImporter();
+                    var importedList = i.Import(openFileDialog1.FileName); // @"c:\temp\PrintRun3.csv"); // C:\projects2\PrintQueueManager\PrintRun(1).csv");
+                    ExtractImportedData(importedList);
+                    foreach (var item in ProfileControllers)
+                    {
+                        item.frame.PopulatePrintRun();
+                        item.frame.PopulatePageSelector();
+                    }
+                    RemoveOutdatedRecords();
                 }
             }
         }

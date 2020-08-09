@@ -1301,6 +1301,18 @@ namespace PrintQueueManager
                 Controller.LoadProfileOrders(page);
             }
         }
+
+        private void chkNoAutoScaling_CheckedChanged(object sender, EventArgs e)
+        {
+            Controller.NoScaling = chkNoAutoScaling.Checked;
+        }
+
+        private void button6_Click_3(object sender, EventArgs e)
+        {
+            var form = new AcroPDFForm();
+            form.Show();
+            
+        }
     }
 
     class PrintRunData

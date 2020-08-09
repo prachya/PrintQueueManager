@@ -413,7 +413,7 @@ namespace PrintQueueManager.Print
         Document document;
         PrintDocument printDocument;
 
-        private Matrix GetPrintTransformation(Page page, RectangleF printableArea)
+        private Matrix GetPrintTransformation(Page page, RectangleF printableArea, PrintPageEventArgs e)
         {
             Matrix transformation = new Matrix();
 
@@ -424,12 +424,22 @@ namespace PrintQueueManager.Print
             PaperSize paperSize = printDocument.PrinterSettings.PaperSizes[0];
             float paperWidth = ((float)paperSize.Width * 72f) / 100f;
             float paperHeight = ((float)paperSize.Height * 72f) / 100f;
+            //float paperWidth = (e.PageSettings.PrintableArea.Width * 72f) / 100f;
+            //float paperHeight = (e.PageSettings.PrintableArea.Height * 72f) / 100f;
 
             // It is possible that a driver returns bogus data for the printable area. If that is
             // obviously the case, we are going to ignore the usePrintableArea settings (otherwise
             // we get invalid transforms).
+
+            //paperWidth = e.PageSettings.PrintableArea.Width; // .PaperSize.Width; // printableArea.Width;
+            //paperHeight = e.PageSettings.PrintableArea.Height; //.PaperSize.Height; // printableArea.Height;
+
             paperWidth = printableArea.Width;
             paperHeight = printableArea.Height;
+
+            //paperWidth = paperSize.Width;
+            //paperHeight = paperSize.Height;
+            //transformation.Translate(printableArea.Left, printableArea.Top);
             transformation.Translate(printableArea.Left, printableArea.Top);
 
             float paperRatio = paperWidth / paperHeight;
@@ -448,21 +458,30 @@ namespace PrintQueueManager.Print
                 pdfRatio = 1 / pdfRatio;
             }
 
+
+            
             float scale = 1;
-            if (pdfRatio > paperRatio)
-                scale = paperWidth / scaledPdfWidth;
-            else
-                scale = paperHeight / scaledPdfHeight;
+            //if ((e.PageSettings.PaperSize.Kind == PaperKind.A2) || ((e.PageSettings.PaperSize.Width > ))
+            //{
 
-            scaledPdfWidth *= scale;
-            scaledPdfHeight *= scale;
+            //}
+            //else {
+                if (pdfRatio > paperRatio)
+                    scale = paperWidth / scaledPdfWidth;
+                else
+                    scale = paperHeight / scaledPdfHeight;
 
-            // auto-rotate
-            if (rotate)
-            {
-                transformation.Rotate(-90);
-                transformation.Translate(-scaledPdfHeight, 0);
-            }
+
+            //scaledPdfWidth *= scale;
+            //scaledPdfHeight *= scale;
+
+            //auto - rotate
+            //if (rotate)
+            //{
+            //    transformation.Rotate(-90);
+            //    transformation.Translate(-scaledPdfHeight, 0);
+            //}
+            //}
 
             // scale
             transformation.Scale(scale, scale);
@@ -473,7 +492,8 @@ namespace PrintQueueManager.Print
         void printFitPage(object sender, PrintPageEventArgs e)
         {
             e.Graphics.PageUnit = GraphicsUnit.Point;
-
+            FirePrinterPrintProgress("printing with size: " + e.PageSettings.PaperSize.Kind.ToString());
+            FirePrinterStatusInfo("printing with size: " + e.PageSettings.PaperSize.Kind.ToString());
             Page page = document.Pages[currentPage++];
             //e.PageSettings.PaperSize.Width = 11.7;
             //e.PageSettings.PaperSize.Height = 16.5;
@@ -503,6 +523,7 @@ namespace PrintQueueManager.Print
                (float)(printerWidth - scale * pdfWidth) / 2,
                (float)(printerHeight - scale * pdfHeight) / 2);
         }
+        private string FilePath;
 
         void printPage(object sender, PrintPageEventArgs e)
         {
@@ -514,10 +535,17 @@ namespace PrintQueueManager.Print
             e.HasMorePages = false;
             if (currentPage <= document.Pages.Count)
             {
+                FirePrinterStatusInfo("Print paper " + e.PageSettings.PaperSize.Kind.ToString() + " " + this.FilePath);
                 e.Graphics.PageUnit = GraphicsUnit.Point;
                 Page page = document.Pages[currentPage];
+                if (!this.NoScaling)
+                {
+                    if (e.PageSettings.PaperSize.Kind != PaperKind.A2)
+                    {
+                        e.Graphics.MultiplyTransform(GetPrintTransformation(page, e.Graphics.VisibleClipBounds, e));
+                    }
+                }
 
-                //e.Graphics.MultiplyTransform(GetPrintTransformation(page, e.Graphics.VisibleClipBounds));
                 page.Draw(e.Graphics);
                 if (currentPage < document.Pages.Count - 1)
                 {
@@ -525,14 +553,13 @@ namespace PrintQueueManager.Print
                     e.HasMorePages = true;
                 }
             }
-
-                
-
-
         }
 
-        public async Task<bool> Send3(string filePath, PrinterSettings settings, short noOfCopies = 1)
+        private bool NoScaling;
+        public async Task<bool> Send3(string filePath, PrinterSettings settings, short noOfCopies = 1,bool noScaling = false)
         {
+            this.FilePath = filePath;
+            NoScaling = noScaling;
             Aborted = false;
             ChangeStatus(PrintingStatus.Initialized);
 
@@ -553,8 +580,8 @@ namespace PrintQueueManager.Print
                         else
                             printDocument.PrinterSettings.PrinterName = PrinterName;
                         printDocument.DocumentName = filePath;
-                        //printDocument.PrintPage += new PrintPageEventHandler(printPage);
-                        printDocument.PrintPage += new PrintPageEventHandler(printFitPage);
+                        printDocument.PrintPage += new PrintPageEventHandler(printPage);
+                        //printDocument.PrintPage += new PrintPageEventHandler(printFitPage);
                         printDocument.PrintController = new StandardPrintController();
                         printDocument.OriginAtMargins = true;
                         printDocument.PrinterSettings.Copies = noOfCopies;
@@ -564,8 +591,8 @@ namespace PrintQueueManager.Print
                         printDocument.DefaultPageSettings.Margins.Left = 0;
                         printDocument.DefaultPageSettings.Margins.Right = 0;
                         printDocument.DefaultPageSettings.Margins.Bottom = 0;
-                        printDocument.DefaultPageSettings.Margins.Top = 0;
-
+                        printDocument.DefaultPageSettings.Margins.Top = 0;                        
+                        
                         //printDocument.DefaultPageSettings.Landscape = true;
                         FirePrinterStatusInfo("Sending " + filePath + " to printer");
                         printDocument.Print();

@@ -37,6 +37,7 @@
             this.fTPLocationSettingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshRepoFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.searchOrdersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.manuallyImportCSVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -49,6 +50,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.StatusMessage = new System.Windows.Forms.StatusStrip();
             this.StatusMessageLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.menuStrip1.SuspendLayout();
             this.StatusMessage.SuspendLayout();
             this.SuspendLayout();
@@ -89,6 +91,7 @@
             this.fTPLocationSettingToolStripMenuItem,
             this.refreshRepoFolderToolStripMenuItem,
             this.searchOrdersToolStripMenuItem,
+            this.manuallyImportCSVToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.menuToolStripMenuItem.Name = "menuToolStripMenuItem";
             this.menuToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
@@ -97,42 +100,49 @@
             // newProfileToolStripMenuItem
             // 
             this.newProfileToolStripMenuItem.Name = "newProfileToolStripMenuItem";
-            this.newProfileToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.newProfileToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.newProfileToolStripMenuItem.Text = "New Profile";
             this.newProfileToolStripMenuItem.Click += new System.EventHandler(this.newProfileToolStripMenuItem_Click);
             // 
             // createProsetToolStripMenuItem
             // 
             this.createProsetToolStripMenuItem.Name = "createProsetToolStripMenuItem";
-            this.createProsetToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.createProsetToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.createProsetToolStripMenuItem.Text = "Create Preset";
             this.createProsetToolStripMenuItem.Click += new System.EventHandler(this.createProsetToolStripMenuItem_Click);
             // 
             // fTPLocationSettingToolStripMenuItem
             // 
             this.fTPLocationSettingToolStripMenuItem.Name = "fTPLocationSettingToolStripMenuItem";
-            this.fTPLocationSettingToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.fTPLocationSettingToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.fTPLocationSettingToolStripMenuItem.Text = "Settings";
             this.fTPLocationSettingToolStripMenuItem.Click += new System.EventHandler(this.fTPLocationSettingToolStripMenuItem_Click);
             // 
             // refreshRepoFolderToolStripMenuItem
             // 
             this.refreshRepoFolderToolStripMenuItem.Name = "refreshRepoFolderToolStripMenuItem";
-            this.refreshRepoFolderToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.refreshRepoFolderToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.refreshRepoFolderToolStripMenuItem.Text = "Refresh repo folder";
             this.refreshRepoFolderToolStripMenuItem.Click += new System.EventHandler(this.refreshRepoFolderToolStripMenuItem_Click);
             // 
             // searchOrdersToolStripMenuItem
             // 
             this.searchOrdersToolStripMenuItem.Name = "searchOrdersToolStripMenuItem";
-            this.searchOrdersToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.searchOrdersToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.searchOrdersToolStripMenuItem.Text = "Search Orders";
             this.searchOrdersToolStripMenuItem.Click += new System.EventHandler(this.SearchOrdersToolStripMenuItem_Click);
+            // 
+            // manuallyImportCSVToolStripMenuItem
+            // 
+            this.manuallyImportCSVToolStripMenuItem.Name = "manuallyImportCSVToolStripMenuItem";
+            this.manuallyImportCSVToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.manuallyImportCSVToolStripMenuItem.Text = "Manually Import CSV";
+            this.manuallyImportCSVToolStripMenuItem.Click += new System.EventHandler(this.manuallyImportCSVToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -219,6 +229,10 @@
             this.StatusMessageLabel.Size = new System.Drawing.Size(13, 17);
             this.StatusMessageLabel.Text = "  ";
             // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -231,7 +245,7 @@
             this.DoubleBuffered = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
-            this.Text = "Print Queue Manager v1.42.287";
+            this.Text = "Print Queue Manager v1.42.33";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.menuStrip1.ResumeLayout(false);
@@ -264,6 +278,8 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.StatusStrip StatusMessage;
         private System.Windows.Forms.ToolStripStatusLabel StatusMessageLabel;
+        private System.Windows.Forms.ToolStripMenuItem manuallyImportCSVToolStripMenuItem;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
     }
 }
 

@@ -98,8 +98,8 @@ namespace PrintQueueManager.Data
                     var createdDate = csv.GetField("Created Date");
                     //18/12/2019 13:16
 #if DEBUG
-                    order.ReceivedDate = DateTime.ParseExact(receivedDate, "dd/MM/yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture);
-                    order.CreatedDate = DateTime.ParseExact(createdDate, "dd/MM/yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+                    order.ReceivedDate = DateTime.ParseExact(receivedDate, "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                    order.CreatedDate = DateTime.ParseExact(createdDate, "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
 
 #else
                     if(receivedDate.Contains("-"))

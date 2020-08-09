@@ -18,7 +18,7 @@ namespace PrintQueueManager
 
         public event PrintingFinishedHandler OnPrintingFinished;
         public event PrintItemStatusChanged OnPrintItemStatusChanged;
-
+        public bool NoScaling = false;
         public PrintProfile profile { get; set; }
         public ProfileStatus Status { get; set; } = ProfileStatus.Stopped;
         public MainForm mainForm { get; set; }
@@ -653,6 +653,8 @@ namespace PrintQueueManager
 
             return inProfileList;   
         }
+
+
         private async Task<bool> PrintNext()
         {
             //var printItem = CurrentList.Where(d => d.ProfileOrder.PrintingStatus == Data.PrintingStatus.Pending).LastOrDefault();
@@ -718,7 +720,8 @@ namespace PrintQueueManager
                         // Send file to printer now.
                         // ************************************************************************
                         var starttime = DateTime.Now;
-                        if (!await printController.Send3(filePath, settings, printCopies))
+                        if (!await printController.Send3(filePath, settings, printCopies, NoScaling))
+                        //    if (!await printController.Send3(filePath, settings, printCopies,NoScaling))
                         {
                             mainForm.log.AddMessage("Failed printing file: " + filePath);
                             OnPrintItemStatusChanged?.Invoke(this, printItem.ProfileOrder, Data.PrintingStatus.Printing);
