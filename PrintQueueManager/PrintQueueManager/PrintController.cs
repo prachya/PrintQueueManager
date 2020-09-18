@@ -54,6 +54,7 @@ namespace PrintQueueManager.Print
             string part2 = "";
             string part1 = "";
             PrintQueue q = null;
+            //PrinterName = "Microsoft Print to PDF";
             if (IsNetworkedPrinter(PrinterName, out part1, out part2))
             {
                 var ps = new PrintServer(part1);
@@ -458,30 +459,21 @@ namespace PrintQueueManager.Print
                 pdfRatio = 1 / pdfRatio;
             }
 
-
-            
             float scale = 1;
-            //if ((e.PageSettings.PaperSize.Kind == PaperKind.A2) || ((e.PageSettings.PaperSize.Width > ))
-            //{
+            if (pdfRatio > paperRatio)
+                scale = paperWidth / scaledPdfWidth;
+            else
+                scale = paperHeight / scaledPdfHeight;
 
-            //}
-            //else {
-                if (pdfRatio > paperRatio)
-                    scale = paperWidth / scaledPdfWidth;
-                else
-                    scale = paperHeight / scaledPdfHeight;
+            scaledPdfWidth *= scale;
+            scaledPdfHeight *= scale;
 
-
-            //scaledPdfWidth *= scale;
-            //scaledPdfHeight *= scale;
-
-            //auto - rotate
-            //if (rotate)
-            //{
-            //    transformation.Rotate(-90);
-            //    transformation.Translate(-scaledPdfHeight, 0);
-            //}
-            //}
+            // auto-rotate
+            if (rotate)
+            {
+                transformation.Rotate(-90);
+                transformation.Translate(-scaledPdfHeight, 0);
+            }
 
             // scale
             transformation.Scale(scale, scale);
@@ -538,13 +530,13 @@ namespace PrintQueueManager.Print
                 FirePrinterStatusInfo("Print paper " + e.PageSettings.PaperSize.Kind.ToString() + " " + this.FilePath);
                 e.Graphics.PageUnit = GraphicsUnit.Point;
                 Page page = document.Pages[currentPage];
-                if (!this.NoScaling)
-                {
-                    if (e.PageSettings.PaperSize.Kind != PaperKind.A2)
-                    {
+                //if (!this.NoScaling)
+                //{
+                //    if (e.PageSettings.PaperSize.Kind != PaperKind.A2)
+                //    {
                         e.Graphics.MultiplyTransform(GetPrintTransformation(page, e.Graphics.VisibleClipBounds, e));
-                    }
-                }
+                //    }
+                //}
 
                 page.Draw(e.Graphics);
                 if (currentPage < document.Pages.Count - 1)
@@ -555,80 +547,99 @@ namespace PrintQueueManager.Print
             }
         }
 
+        [DllImport("winspool.drv", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern bool SetDefaultPrinter(string Name);
         private bool NoScaling;
-        public async Task<bool> Send3(string filePath, PrinterSettings settings, short noOfCopies = 1,bool noScaling = false)
+        public async Task<bool> Send3(string filePath, PrinterSettings settings, short noOfCopies = 1,bool noScaling = false,bool useAcrobat=false)
         {
-            this.FilePath = filePath;
+            FilePath = filePath;
             NoScaling = noScaling;
             Aborted = false;
             ChangeStatus(PrintingStatus.Initialized);
-
-            Task.Run(() =>
+            if (useAcrobat)
             {
-                currentPage = 0;
-                try
+                //using (FileStream file = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                //axAcroPDF1.src = openFileDialog1.FileName;
+                //axAcroPDF1.printAll();
+                //status = PrintingStatus.Printing;
+
+                //var printerServer = new LocalPrintServer(); // new PrintServer(PrinterName);
+                //printerServer.DefaultPrintQueue = printerServer.GetPrintQueue(PrinterName);
+                SetDefaultPrinter(PrinterName);
+                var f = AcroPDFForm.GetForm();
+                f.PrintFile(filePath);
+                //printerServer.Dispose();
+            }
+            else
+            {
+                Task.Run(() =>
                 {
-                    using (FileStream file = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                    currentPage = 0;
+                    try
                     {
-                        document = new Document(file);
-                        //settings.DefaultPageSettings.Landscape = true;
+                        using (FileStream file = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                        {
+                            document = new Document(file);
+                            //settings.DefaultPageSettings.Landscape = true;
+                            printDocument = new PrintDocument();
+                            printDocument.DocumentName = document.DocumentInfo.Title;
+                            if (settings != null)
+                                printDocument.PrinterSettings = settings;
+                            else
+                                printDocument.PrinterSettings.PrinterName = PrinterName;
+                            printDocument.DocumentName = filePath;
+                            printDocument.PrintPage += new PrintPageEventHandler(printPage);
+                            //printDocument.PrintPage += new PrintPageEventHandler(printFitPage);
+                            printDocument.PrintController = new StandardPrintController();
+                            printDocument.OriginAtMargins = true;
+                            printDocument.PrinterSettings.Copies = noOfCopies;
+                            //printDocument.PrinterSettings.DefaultPageSettings.Landscape = true;
+                            if (settings != null)
+                                printDocument.DefaultPageSettings = settings.DefaultPageSettings;
+                            printDocument.DefaultPageSettings.Margins.Left = 0;
+                            printDocument.DefaultPageSettings.Margins.Right = 0;
+                            printDocument.DefaultPageSettings.Margins.Bottom = 0;
+                            printDocument.DefaultPageSettings.Margins.Top = 0;
 
-                        printDocument = new PrintDocument();
-                        printDocument.DocumentName = document.DocumentInfo.Title;
-                        if (settings != null)
-                            printDocument.PrinterSettings = settings;
-                        else
-                            printDocument.PrinterSettings.PrinterName = PrinterName;
-                        printDocument.DocumentName = filePath;
-                        printDocument.PrintPage += new PrintPageEventHandler(printPage);
-                        //printDocument.PrintPage += new PrintPageEventHandler(printFitPage);
-                        printDocument.PrintController = new StandardPrintController();
-                        printDocument.OriginAtMargins = true;
-                        printDocument.PrinterSettings.Copies = noOfCopies;
-                        //printDocument.PrinterSettings.DefaultPageSettings.Landscape = true;
-                        if(settings != null)
-                            printDocument.DefaultPageSettings = settings.DefaultPageSettings;
-                        printDocument.DefaultPageSettings.Margins.Left = 0;
-                        printDocument.DefaultPageSettings.Margins.Right = 0;
-                        printDocument.DefaultPageSettings.Margins.Bottom = 0;
-                        printDocument.DefaultPageSettings.Margins.Top = 0;                        
-                        
-                        //printDocument.DefaultPageSettings.Landscape = true;
-                        FirePrinterStatusInfo("Sending " + filePath + " to printer");
-                        printDocument.Print();
-                        FirePrinterStatusInfo("Sending " + filePath + " to printer ... done");
+                            //printDocument.DefaultPageSettings.Landscape = true;
+                            FirePrinterStatusInfo("Sending " + filePath + " to printer");
+                            printDocument.Print();
+                            FirePrinterStatusInfo("Sending " + filePath + " to printer ... done");
+                        }
                     }
-                }
-                catch (Exception ex)
-                {
-
-                    // The conversion failed
-                    if (ex.Message != "The operation completed successfully")
-                        throw new Exception(String.Format("An error occurred. {0}", ex.Message));
+                    catch (Exception ex)
+                    {
+                        // The conversion failed
+                        if (ex.Message != "The operation completed successfully")
+                                throw new Exception(String.Format("An error occurred. {0}", ex.Message));
                         //System.Windows.Forms.MessageBox.Show(String.Format("An error occurred. {0}", ex.Message), "Error");
                         //return;
                         //return false;
-                }
-                finally
-                {
-                    //Cursor = Cursors.Arrow;
-                }
+                    }
+                    finally
+                    {
+                        //Cursor = Cursors.Arrow;
+                    }
 
-            });
+                });
 
-            //ChangeStatus(PrintingStatus.Printing);
+                //ChangeStatus(PrintingStatus.Printing);
 
-            //StartJobMonitor();
+                //StartJobMonitor();
 
-            // start print job monitor.
-            StartJobMonitor2();            
-            await Task.Factory.StartNew(() =>            {
+                // start print job monitor.
+                
+            }
+
+            StartJobMonitor2();
+            await Task.Factory.StartNew(() => {
                 while (status == PrintingStatus.Printing || status == PrintingStatus.Initialized)
                     Thread.Sleep(2000);
             });
 
             // stop the monitor.
             JobMonitorTimer.Change(Timeout.Infinite, Timeout.Infinite);
+
 
             return true;
 

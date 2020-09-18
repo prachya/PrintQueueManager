@@ -1313,6 +1313,11 @@ namespace PrintQueueManager
             form.Show();
             
         }
+
+        private void chkUseAcrobat_CheckedChanged(object sender, EventArgs e)
+        {
+            Controller.UseAcrobat = chkUseAcrobat.Checked;
+        }
     }
 
     class PrintRunData

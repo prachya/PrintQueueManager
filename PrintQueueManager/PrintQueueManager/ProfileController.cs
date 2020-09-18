@@ -19,6 +19,7 @@ namespace PrintQueueManager
         public event PrintingFinishedHandler OnPrintingFinished;
         public event PrintItemStatusChanged OnPrintItemStatusChanged;
         public bool NoScaling = false;
+        public bool UseAcrobat = false;
         public PrintProfile profile { get; set; }
         public ProfileStatus Status { get; set; } = ProfileStatus.Stopped;
         public MainForm mainForm { get; set; }
@@ -720,7 +721,7 @@ namespace PrintQueueManager
                         // Send file to printer now.
                         // ************************************************************************
                         var starttime = DateTime.Now;
-                        if (!await printController.Send3(filePath, settings, printCopies, NoScaling))
+                        if (!await printController.Send3(filePath, settings, printCopies, NoScaling,UseAcrobat))
                         //    if (!await printController.Send3(filePath, settings, printCopies,NoScaling))
                         {
                             mainForm.log.AddMessage("Failed printing file: " + filePath);

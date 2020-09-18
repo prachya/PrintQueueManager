@@ -40,6 +40,8 @@
             this.btnMove = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.chkUseAcrobat = new System.Windows.Forms.CheckBox();
+            this.button6 = new System.Windows.Forms.Button();
             this.chkNoAutoScaling = new System.Windows.Forms.CheckBox();
             this.label12 = new System.Windows.Forms.Label();
             this.btnDeleteProfile = new System.Windows.Forms.Button();
@@ -102,7 +104,6 @@
             this.startPrintTimer = new System.Windows.Forms.Timer(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.orderBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.button6 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel4.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -204,6 +205,7 @@
             // 
             // panel4
             // 
+            this.panel4.Controls.Add(this.chkUseAcrobat);
             this.panel4.Controls.Add(this.button6);
             this.panel4.Controls.Add(this.chkNoAutoScaling);
             this.panel4.Controls.Add(this.label12);
@@ -222,10 +224,33 @@
             this.panel4.Size = new System.Drawing.Size(403, 111);
             this.panel4.TabIndex = 14;
             // 
+            // chkUseAcrobat
+            // 
+            this.chkUseAcrobat.AutoSize = true;
+            this.chkUseAcrobat.Location = new System.Drawing.Point(316, 52);
+            this.chkUseAcrobat.Name = "chkUseAcrobat";
+            this.chkUseAcrobat.Size = new System.Drawing.Size(85, 17);
+            this.chkUseAcrobat.TabIndex = 25;
+            this.chkUseAcrobat.Text = "Use Acrobat";
+            this.chkUseAcrobat.UseVisualStyleBackColor = true;
+            this.chkUseAcrobat.CheckedChanged += new System.EventHandler(this.chkUseAcrobat_CheckedChanged);
+            // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(277, 79);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(122, 23);
+            this.button6.TabIndex = 18;
+            this.button6.Text = "Print PDF with Acrobat";
+            this.toolTip1.SetToolTip(this.button6, "Move selected items to another profile");
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Visible = false;
+            this.button6.Click += new System.EventHandler(this.button6_Click_3);
+            // 
             // chkNoAutoScaling
             // 
             this.chkNoAutoScaling.AutoSize = true;
-            this.chkNoAutoScaling.Location = new System.Drawing.Point(262, 50);
+            this.chkNoAutoScaling.Location = new System.Drawing.Point(218, 52);
             this.chkNoAutoScaling.Name = "chkNoAutoScaling";
             this.chkNoAutoScaling.Size = new System.Drawing.Size(100, 17);
             this.chkNoAutoScaling.TabIndex = 24;
@@ -265,7 +290,7 @@
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(149, 50);
+            this.checkBox1.Location = new System.Drawing.Point(123, 52);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(96, 17);
             this.checkBox1.TabIndex = 20;
@@ -275,7 +300,7 @@
             // 
             // maskedTextBox2
             // 
-            this.maskedTextBox2.Location = new System.Drawing.Point(71, 79);
+            this.maskedTextBox2.Location = new System.Drawing.Point(64, 79);
             this.maskedTextBox2.Mask = "00.00";
             this.maskedTextBox2.Name = "maskedTextBox2";
             this.maskedTextBox2.Size = new System.Drawing.Size(53, 20);
@@ -284,7 +309,7 @@
             // 
             // maskedTextBox1
             // 
-            this.maskedTextBox1.Location = new System.Drawing.Point(71, 50);
+            this.maskedTextBox1.Location = new System.Drawing.Point(64, 50);
             this.maskedTextBox1.Mask = "90.00";
             this.maskedTextBox1.Name = "maskedTextBox1";
             this.maskedTextBox1.Size = new System.Drawing.Size(53, 20);
@@ -294,7 +319,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(11, 82);
+            this.label10.Location = new System.Drawing.Point(4, 82);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(54, 13);
             this.label10.TabIndex = 15;
@@ -303,7 +328,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(11, 53);
+            this.label9.Location = new System.Drawing.Point(4, 53);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(54, 13);
             this.label9.TabIndex = 14;
@@ -864,17 +889,6 @@
             // 
             this.orderBindingSource.DataSource = typeof(PrintQueueManager.Data.Order);
             // 
-            // button6
-            // 
-            this.button6.Location = new System.Drawing.Point(277, 79);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(122, 23);
-            this.button6.TabIndex = 18;
-            this.button6.Text = "Print PDF with Acrobat";
-            this.toolTip1.SetToolTip(this.button6, "Move selected items to another profile");
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click_3);
-            // 
             // ProfileFrame
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -973,5 +987,6 @@
         private System.Windows.Forms.RichTextBox txtPrintingStatus;
         public System.Windows.Forms.CheckBox chkNoAutoScaling;
         public System.Windows.Forms.Button button6;
+        public System.Windows.Forms.CheckBox chkUseAcrobat;
     }
 }
